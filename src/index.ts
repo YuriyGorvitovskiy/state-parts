@@ -1,1 +1,1 @@
-export * from "./storage/in-memory";
+export * from "./storage/in-memory/storage";

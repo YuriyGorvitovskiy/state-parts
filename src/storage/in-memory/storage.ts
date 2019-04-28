@@ -1,8 +1,8 @@
 import * as Glue from "state-glue";
-import { StoragePerType } from "./storage-per-type";
+import { StoragePerType } from "./stroafge-per-type";
 
 export class InMemoryStorage implements Glue.IPatchConsumer, Glue.IEntityProvider {
-    private readonly types: {[type: string]: StoragePerType } = {}
+    private readonly types: { [type: string]: StoragePerType } = {};
 
     public apply(patch: Glue.IPatch): void {
         let storage = this.types[patch.type];
