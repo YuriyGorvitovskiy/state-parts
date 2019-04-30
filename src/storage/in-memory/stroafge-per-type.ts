@@ -1,5 +1,4 @@
 import * as Glue from "state-glue";
-import { Comparator, comparePrimitive, entityComparator, joinComparator } from "../../util/comparator";
 
 export class StoragePerType implements Glue.IPatchConsumer, Glue.IEntityProvider {
     private readonly type: string;

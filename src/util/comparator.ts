@@ -1,4 +1,5 @@
 import * as Glue from "state-glue";
+import { IRecord } from "../storage/in-memory/record";
 
 export type Comparator<P> = (a: P, b: P) => number;
 
@@ -50,8 +51,8 @@ export function joinComparator<P>(...comparators: Array<Comparator<P>>): Compara
     };
 }
 
-export function entityComparator(attr: string, asc: boolean): Comparator<Glue.IEntity> {
-    return (a: Glue.IEntity, b: Glue.IEntity) => {
+export function recordComparator(attr: string, asc: boolean): Comparator<IRecord> {
+    return (a: IRecord, b: IRecord) => {
         return (asc ? 1 : -1) * comparePrimitive(a.attr[attr] as Glue.primitive, b.attr[attr] as Glue.primitive);
     };
 }
