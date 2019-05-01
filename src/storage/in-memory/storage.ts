@@ -1,22 +1,22 @@
-import * as Glue from "state-glue";
-import { StoragePerType } from "./stroafge-per-type";
+import { IEntity, IEntityProvider, IPatch, IPatchConsumer, ISelector } from "state-glue";
+import { Table } from "./table";
 
-export class InMemoryStorage implements Glue.IPatchConsumer, Glue.IEntityProvider {
-    private readonly types: { [type: string]: StoragePerType } = {};
+export class InMemoryStorage implements IPatchConsumer, IEntityProvider {
+    private readonly tables: { [type: string]: Table } = {};
 
-    public apply(patch: Glue.IPatch): void {
-        let storage = this.types[patch.type];
-        if (null == storage) {
-            storage = this.types[patch.type] = new StoragePerType(patch.type);
+    public apply(patch: IPatch): void {
+        let table = this.tables[patch.type];
+        if (null == table) {
+            table = this.tables[patch.type] = new Table(patch.type);
         }
-        storage.apply(patch);
+        table.apply(patch);
     }
 
-    public select(selector: Glue.ISelector): Glue.IEntity[] {
-        const storage = this.types[selector.type];
-        if (null == storage) {
+    public select(selector: ISelector): IEntity[] {
+        const table = this.tables[selector.type];
+        if (null == table) {
             return [];
         }
-        return storage.select(selector);
+        return table.select(selector);
     }
 }

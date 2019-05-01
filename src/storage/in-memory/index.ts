@@ -1,3 +1,4 @@
+import { primitive } from "state-glue";
 import { IRecord } from "./record";
 
 export class Index {
@@ -37,13 +38,19 @@ export class Index {
         }
     }
 
-    public get(value: string): IRecord[] {
+    public get(value: primitive): IRecord[] {
         // treat null and "" as the same key
-        return this.records[value || ""] || [];
+        return this.records[null == value ? "" : "" + value] || [];
     }
 
-    public getFirst(value: string): IRecord {
+    public getFirst(value: primitive): IRecord {
         return this.get(value)[0] || null;
+    }
+
+    public getForAll(value: primitive[]): IRecord[] {
+        const result = [];
+        value.forEach(v => result.concat(this.get(v)));
+        return result;
     }
 
     public getKeyCount(): number {

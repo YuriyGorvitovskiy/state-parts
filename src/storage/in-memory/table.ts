@@ -7,7 +7,8 @@ import {
     IPatchConsumer,
     ISelector,
     ISorting,
-    PatchOp
+    PatchOp,
+    primitive
 } from "state-glue";
 import { Comparator, joinComparator, recordComparator } from "../../util/comparator";
 import { isEmpty } from "../../util/container";
@@ -15,7 +16,7 @@ import { Index } from "./index";
 import { IRecord } from "./record";
 
 export class Table implements IPatchConsumer, IEntityProvider {
-    private static readonly ID: string = "$id";
+    private static readonly ID: string = "id";
     private readonly patchOp: { [op: string]: (patch: IPatch) => any } = {};
 
     private readonly type: string;
@@ -48,15 +49,71 @@ export class Table implements IPatchConsumer, IEntityProvider {
         records = this.page(records, selector.page);
         return this.extract(records, selector.attr);
     }
+
     private filter(filter: IFilter): IRecord[] {
         if (isEmpty(Object.keys(filter))) {
             return Object.values(this.records);
         }
-        // TODO: select best index
-        // TODO: Extract from index
-        // TODO: Apply rest of the filters
-        throw new Error("Method not implemented.");
+
+        // find best index
+        const indexAttr = this.selectIndexAttr(filter);
+
+        // Select using index
+        let result = this.filterByIndex(indexAttr, filter[indexAttr]);
+
+        // Filter the rest of the records
+        result = result.filter(r =>
+            Object.keys(filter).every(attr => indexAttr === attr || 0 <= filter[attr].indexOf(r[attr]))
+        );
+
+        return result;
     }
+
+    private selectIndexAttr(filter: IFilter): string {
+        let indexAttr = null;
+        let recordsCount = this.totalCount;
+        Object.keys(filter).forEach(attr => {
+            let valuesCount = recordsCount;
+            const index = this.indexes[attr];
+            if (null != index) {
+                valuesCount = (filter[attr].length * this.totalCount) / index.getKeyCount();
+            } else if (Table.ID === attr) {
+                valuesCount = filter[attr].length;
+            }
+            if (valuesCount < recordsCount) {
+                indexAttr = attr;
+                recordsCount = valuesCount;
+            }
+        });
+        return indexAttr;
+    }
+
+    private filterByIndex(indexAttr: string, values: primitive[]): IRecord[] {
+        if (Table.ID === indexAttr) {
+            return this.getForAll(values);
+        } else if (null != indexAttr) {
+            return this.indexes[indexAttr].getForAll(values);
+        } else {
+            return Object.values(this.records);
+        }
+    }
+
+    private get(id: primitive): IRecord {
+        // treat null and "" as the same key
+        return this.records[null == id ? "" : "" + id] || null;
+    }
+
+    private getForAll(ids: primitive[]): IRecord[] {
+        const result = [];
+        ids.forEach(v => {
+            const record = this.get(v);
+            if (null != record) {
+                result.push(record);
+            }
+        });
+        return result;
+    }
+
     private sort(records: IRecord[], sort: ISorting[]): IRecord[] {
         if (isEmpty(sort) || isEmpty(records)) {
             return records;
