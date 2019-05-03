@@ -137,11 +137,11 @@ export class Table implements IPatchConsumer, IEntityProvider {
         records.forEach(r => {
             const entity: IEntity = {
                 attr: {},
-                id: r.attr[Table.ID],
+                id: r[Table.ID] as string,
                 type: this.type
             };
             if (null != attr) {
-                attr.forEach(a => (entity.attr[a] = r.attr[a]));
+                attr.forEach(a => (entity.attr[a] = r[a]));
             }
             result.push(entity);
         });
@@ -150,7 +150,7 @@ export class Table implements IPatchConsumer, IEntityProvider {
 
     private upsert(patch: IPatch): void {
         const prev = this.records[patch.id];
-        const next = Object.assign({}, prev, patch.attr, { $id: patch.id });
+        const next = Object.assign({}, prev, patch.attr, { id: patch.id });
         this.records[patch.id] = next;
         if (null == prev) {
             this.totalCount++;
