@@ -48,8 +48,8 @@ export class Index {
     }
 
     public getForAll(value: primitive[]): IRecord[] {
-        const result = [];
-        value.forEach(v => result.concat(this.get(v)));
+        let result = [];
+        value.forEach(v => (result = result.concat(this.get(v))));
         return result;
     }
 
