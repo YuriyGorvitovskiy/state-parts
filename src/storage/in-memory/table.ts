@@ -119,7 +119,7 @@ export class Table implements IPatchConsumer, IEntityProvider {
             return records;
         }
         const comparators: Array<Comparator<IRecord>> = [];
-        sort.forEach(s => comparators.push(recordComparator(s.attr, s.asc)));
+        sort.forEach(s => comparators.push(recordComparator(s.attr, s.desc)));
         return records.sort(joinComparator(...comparators));
     }
     private page(records: IRecord[], page: IPage): IRecord[] {

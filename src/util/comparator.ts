@@ -51,8 +51,8 @@ export function joinComparator<P>(...comparators: Array<Comparator<P>>): Compara
     };
 }
 
-export function recordComparator(attr: string, asc: boolean): Comparator<IRecord> {
+export function recordComparator(attr: string, desc: boolean): Comparator<IRecord> {
     return (a: IRecord, b: IRecord) => {
-        return (asc ? 1 : -1) * comparePrimitive(a.attr[attr] as Glue.primitive, b.attr[attr] as Glue.primitive);
+        return (desc ? -1 : 1) * comparePrimitive(a[attr] as Glue.primitive, b[attr] as Glue.primitive);
     };
 }
