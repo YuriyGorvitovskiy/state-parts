@@ -12,10 +12,10 @@ export class InMemoryStorage implements IPatchConsumer, IEntityProvider {
         table.apply(patch);
     }
 
-    public select(selector: ISelector): IEntity[] {
+    public select(selector: ISelector): Promise<IEntity[]> {
         const table = this.tables[selector.type];
         if (null == table) {
-            return [];
+            return new Promise<IEntity[]>(resolve => resolve([]));
         }
         return table.select(selector);
     }

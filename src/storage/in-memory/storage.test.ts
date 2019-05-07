@@ -43,24 +43,27 @@ test("Upsert patch", () => {
     consumer.apply(patch);
 
     // Verify
-    expect(
-        provider.select({
-            attr: [],
-            filter: {
-                id: [TYPE_USER]
-            },
-            type: TYPE_CLASS
-        })
-    ).toEqual([
-        {
-            attr: {},
-            id: TYPE_USER,
-            type: TYPE_CLASS
-        }
-    ] as IEntity[]);
+    const selector: ISelector = {
+        attr: [],
+        filter: {
+            id: [TYPE_USER]
+        },
+        type: TYPE_CLASS
+    };
+
+    return provider.select(selector).then(result => {
+        expect(result).toEqual([
+            {
+                attr: {},
+                id: TYPE_USER,
+                type: TYPE_CLASS
+            }
+        ] as IEntity[]);
+    });
 });
 
 test("Select 2 entities by id", () => {
+    // Setup
     const selector: ISelector = {
         attr: ["id"],
         filter: {
@@ -70,28 +73,31 @@ test("Select 2 entities by id", () => {
     };
 
     // Execute
-    const result = provider.select(selector);
+    const promise = provider.select(selector);
 
     // Verify
-    expect(result).toEqual([
-        {
-            attr: {
-                id: TYPE_ATTRIBUTE
+    return promise.then(result => {
+        expect(result).toEqual([
+            {
+                attr: {
+                    id: TYPE_ATTRIBUTE
+                },
+                id: TYPE_ATTRIBUTE,
+                type: TYPE_CLASS
             },
-            id: TYPE_ATTRIBUTE,
-            type: TYPE_CLASS
-        },
-        {
-            attr: {
-                id: TYPE_TASK
-            },
-            id: TYPE_TASK,
-            type: TYPE_CLASS
-        }
-    ] as IEntity[]);
+            {
+                attr: {
+                    id: TYPE_TASK
+                },
+                id: TYPE_TASK,
+                type: TYPE_CLASS
+            }
+        ] as IEntity[]);
+    });
 });
 
 test("Select non-existing type", () => {
+    // Setup
     const selector: ISelector = {
         attr: ["id"],
         filter: {
@@ -101,8 +107,10 @@ test("Select non-existing type", () => {
     };
 
     // Execute
-    const result = provider.select(selector);
+    const promise = provider.select(selector);
 
     // Verify
-    expect(result).toEqual([]);
+    return promise.then(result => {
+        expect(result).toEqual([]);
+    });
 });

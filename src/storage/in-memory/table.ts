@@ -40,14 +40,16 @@ export class Table implements IPatchConsumer, IEntityProvider {
         this.patchOp[patch.op](patch);
     }
 
-    public select(selector: ISelector): IEntity[] {
-        if (this.type !== selector.type || 0 === this.totalCount) {
-            return [];
-        }
-        let records: IRecord[] = this.filter(selector.filter);
-        records = this.sort(records, selector.sort);
-        records = this.page(records, selector.page);
-        return this.extract(records, selector.attr);
+    public select(selector: ISelector): Promise<IEntity[]> {
+        return new Promise<IEntity[]>(resolve => {
+            if (this.type !== selector.type || 0 === this.totalCount) {
+                resolve([]);
+            }
+            let records: IRecord[] = this.filter(selector.filter);
+            records = this.sort(records, selector.sort);
+            records = this.page(records, selector.page);
+            resolve(this.extract(records, selector.attr));
+        });
     }
 
     private filter(filter: IFilter): IRecord[] {
