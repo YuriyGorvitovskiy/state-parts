@@ -4,6 +4,10 @@ import { Table } from "./table";
 export class InMemoryStorage implements IPatchConsumer, IEntityProvider {
     private readonly tables: { [type: string]: Table } = {};
 
+    constructor(...tables: Table[]) {
+        tables.forEach(t => (this.tables[t.type] = t));
+    }
+
     public apply(patch: IPatch): void {
         let table = this.tables[patch.type];
         if (null == table) {

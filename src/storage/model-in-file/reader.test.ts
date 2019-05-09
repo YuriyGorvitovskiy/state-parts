@@ -1,9 +1,10 @@
 import { InMemoryStorage } from "../in-memory/storage";
-import { ModelReader } from "./reader";
+import { Table } from "../in-memory/table";
+import { ModelReader, TYPE_ATTRIBUTE, TYPE_CLASS } from "./reader";
 
 test("Test reader", () => {
     // Setup
-    const storage: InMemoryStorage = new InMemoryStorage();
+    const storage: InMemoryStorage = new InMemoryStorage(new Table(TYPE_CLASS), new Table(TYPE_ATTRIBUTE, "class"));
     const subject: ModelReader = new ModelReader();
 
     // Execute

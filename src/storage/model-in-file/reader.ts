@@ -1,6 +1,9 @@
 import * as FS from "fs";
 import { IPatch, IPatchConsumer, PatchOp } from "state-glue";
 
+export const TYPE_CLASS = "class";
+export const TYPE_ATTRIBUTE = "attribute";
+
 export class ModelReader {
     public readAsPatch(folder: string, consumer: IPatchConsumer): Promise<number> {
         return FS.promises.readdir(folder).then(names => {
@@ -22,7 +25,7 @@ export class ModelReader {
             attr: {},
             id: name,
             op: PatchOp.UPSERT,
-            type: "class"
+            type: TYPE_CLASS
         } as IPatch);
 
         const json = JSON.parse(content);
@@ -36,7 +39,7 @@ export class ModelReader {
                 },
                 id: name + "." + key,
                 op: PatchOp.UPSERT,
-                type: "attribute"
+                type: TYPE_ATTRIBUTE
             } as IPatch);
         });
     }

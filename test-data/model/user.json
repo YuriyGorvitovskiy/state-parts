@@ -1,11 +1,8 @@
 {
-    "id": {
+    "email": {
         "type": "string"
     },
     "full_name": {
-        "type": "string"
-    },
-    "email": {
         "type": "string"
     }
 }

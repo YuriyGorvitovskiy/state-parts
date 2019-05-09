@@ -16,10 +16,11 @@ import { Index } from "./index";
 import { IRecord } from "./record";
 
 export class Table implements IPatchConsumer, IEntityProvider {
-    private static readonly ID: string = "id";
+    public static readonly ID: string = "id";
+    public readonly type: string;
+
     private readonly patchOp: { [op: string]: (patch: IPatch) => any } = {};
 
-    private readonly type: string;
     private readonly records: { [id: string]: IRecord } = {};
     private readonly indexes: { [attr: string]: Index } = {};
     private totalCount: number = 0;
