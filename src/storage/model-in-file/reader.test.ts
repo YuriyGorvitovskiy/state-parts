@@ -52,7 +52,7 @@ test("Test reader", () => {
                         target: "user",
                         type: "reference"
                     },
-                    id: "task.assignee",
+                    id: "task:assignee",
                     type: "attribute"
                 },
                 {
@@ -61,7 +61,7 @@ test("Test reader", () => {
                         target: null,
                         type: "text"
                     },
-                    id: "task.description",
+                    id: "task:description",
                     type: "attribute"
                 },
                 {
@@ -70,7 +70,7 @@ test("Test reader", () => {
                         target: null,
                         type: "timestamp"
                     },
-                    id: "task.due",
+                    id: "task:due",
                     type: "attribute"
                 },
                 {
@@ -79,7 +79,7 @@ test("Test reader", () => {
                         target: null,
                         type: "string"
                     },
-                    id: "task.name",
+                    id: "task:name",
                     type: "attribute"
                 },
                 {
@@ -88,7 +88,7 @@ test("Test reader", () => {
                         target: null,
                         type: "string"
                     },
-                    id: "task.state",
+                    id: "task:state",
                     type: "attribute"
                 },
                 {
@@ -97,7 +97,7 @@ test("Test reader", () => {
                         target: "any",
                         type: "reference"
                     },
-                    id: "task.subject",
+                    id: "task:subject",
                     type: "attribute"
                 },
                 {
@@ -106,7 +106,7 @@ test("Test reader", () => {
                         target: "class",
                         type: "reference"
                     },
-                    id: "task.subject_type",
+                    id: "task:subject_type",
                     type: "attribute"
                 }
             ])

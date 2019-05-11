@@ -23,26 +23,55 @@ export class ModelWriter implements IPatchConsumer {
                 return this.deleteClass(patch.id);
             }
         }
-        return null;
+        return Promise.resolve(null);
     }
 
     private upsertAttribute(id: string, attr: { [key: string]: any }): Promise<any> {
-        // TODO
-        return null;
+        const idSplit = this.splitAttrId(id);
+        const file = this.folder + "/" + idSplit.class + ".json";
+        return FS.promises
+            .readFile(file, "utf8")
+            .catch(() => "{}")
+            .then(content => {
+                const attrMap = JSON.parse(content);
+                attrMap[idSplit.attr] = Object.assign(attrMap[idSplit.attr] || {}, attr);
+                return FS.promises.writeFile(file, JSON.stringify(attrMap, null, 2), { encoding: "utf8", flag: "w" });
+            });
     }
 
     private deleteAttribute(id: string): Promise<any> {
-        // TODO
-        return null;
+        const idSplit = this.splitAttrId(id);
+        const file = this.folder + "/" + idSplit.class + ".json";
+        return FS.promises
+            .readFile(file, "utf8")
+            .then(content => {
+                const attrMap = JSON.parse(content);
+                delete attrMap[idSplit.attr];
+                return FS.promises.writeFile(file, JSON.stringify(attrMap, null, 2), { encoding: "utf8", flag: "w" });
+            })
+            .catch(() => null);
     }
 
     private upsertClass(id: string, attr: { [key: string]: any }): Promise<any> {
         const file = this.folder + "/" + id + ".json";
-        return FS.promises.writeFile(file, "{}", { encoding: "utf8", flag: "wx" }).catch(()=>null);
+        return FS.promises.writeFile(file, "{}", { encoding: "utf8", flag: "wx" }).catch(() => null);
     }
 
     private deleteClass(id: string): Promise<any> {
         const file = this.folder + "/" + id + ".json";
         return FS.promises.unlink(file);
     }
+
+    private splitAttrId(attrId: string): ID {
+        const index = attrId.indexOf(":");
+        return {
+            attr: attrId.substr(index + 1),
+            class: attrId.substr(0, index)
+        };
+    }
+}
+
+interface ID {
+    class: string;
+    attr: string;
 }

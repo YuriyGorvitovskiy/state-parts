@@ -474,6 +474,29 @@ test("Test select by index with sorting and pagination", () => {
     );
 });
 
+test("Test select without attribute", () => {
+    // Setup
+    const subject = prepareTableForSelect();
+
+    // Execute
+    const promise = subject.select({
+        attr: null,
+        filter: { title: ["task1"] },
+        type: TYPE_TASK
+    });
+
+    // Verify
+    return promise.then(result =>
+        expect(result).toEqual([
+            {
+                attr: {},
+                id: "1",
+                type: TYPE_TASK
+            }
+        ] as IEntity[])
+    );
+});
+
 test("Test select nothing with sorting and pagination", () => {
     // Setup
     const subject = prepareTableForSelect();

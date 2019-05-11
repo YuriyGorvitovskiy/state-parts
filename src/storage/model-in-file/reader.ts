@@ -37,7 +37,7 @@ export class ModelReader {
                     target: json[key].target || null,
                     type: json[key].type
                 },
-                id: name + "." + key,
+                id: name + ":" + key,
                 op: PatchOp.UPSERT,
                 type: TYPE_ATTRIBUTE
             } as IPatch);
