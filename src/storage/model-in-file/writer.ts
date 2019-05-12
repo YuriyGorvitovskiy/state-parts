@@ -1,5 +1,5 @@
 import * as FS from "fs";
-import { IPatch, IPatchConsumer, PatchOp } from "state-glue";
+import { IPatch, IPatchConsumer, PatchOp, SMPrimitive } from "state-glue";
 import { TYPE_ATTRIBUTE, TYPE_CLASS } from "./reader";
 
 export class ModelWriter implements IPatchConsumer {
@@ -34,7 +34,18 @@ export class ModelWriter implements IPatchConsumer {
             .catch(() => "{}")
             .then(content => {
                 const attrMap = JSON.parse(content);
-                attrMap[idSplit.attr] = Object.assign(attrMap[idSplit.attr] || {}, attr);
+                let type = attrMap[idSplit.attr];
+                let target = null;
+                if ( null != type && !Object.values(SMPrimitive).includes(type)) {
+                    target = type;
+                    type = SMPrimitive.REFERENCE;
+                }
+                type = attr.type || type;
+                target = attr.target || target;
+                if (SMPrimitive.REFERENCE === type && null != target) {
+                    type = target;
+                }
+                attrMap[idSplit.attr] = type;
                 return FS.promises.writeFile(file, JSON.stringify(attrMap, null, 2), { encoding: "utf8", flag: "w" });
             });
     }

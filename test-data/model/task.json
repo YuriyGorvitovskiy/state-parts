@@ -1,26 +1,9 @@
 {
-    "assignee": {
-        "type": "reference",
-        "target": "user"
-    },
-    "description": {
-        "type": "text"
-    },
-    "due": {
-        "type": "timestamp"
-    },
-    "name": {
-        "type": "string"
-    },
-    "state": {
-        "type": "string"
-    },
-    "subject": {
-        "type": "reference",
-        "target": "any"
-    },
-    "subject_type": {
-        "type": "reference",
-        "target": "class"
-    }
+    "assignee": "user",
+    "description": "text",
+    "due": "timestamp",
+    "name": "string",
+    "state": "string",
+    "subject": "reference",
+    "subject_type": "class"
 }

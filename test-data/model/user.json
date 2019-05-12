@@ -1,8 +1,4 @@
 {
-    "email": {
-        "type": "string"
-    },
-    "full_name": {
-        "type": "string"
-    }
+    "email": "string",
+    "full_name": "string"
 }

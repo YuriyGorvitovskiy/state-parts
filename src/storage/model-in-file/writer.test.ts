@@ -8,7 +8,8 @@ afterAll(() => {
         .then(()=> FS.promises.unlink("./test-data/model/no_class.json")).catch(() => null)
         .then(()=> FS.promises.unlink("./test-data/model/no_class2.json")).catch(() => null)
         .then(()=> FS.promises.unlink("./test-data/model/exist_class.json")).catch(() => null)
-        .then(()=> FS.promises.unlink("./test-data/model/exist_class2.json")).catch(() => null);
+        .then(()=> FS.promises.unlink("./test-data/model/exist_class2.json")).catch(() => null)
+        .then(()=> FS.promises.unlink("./test-data/model/exist_class3.json")).catch(() => null);;
 });
 
 test("Upsert new class", () => {
@@ -44,12 +45,8 @@ test("Upsert existing class", () => {
         .then(() => FS.promises.readFile("./test-data/model/user.json", "utf8"))
         .then(content =>
             expect(JSON.parse(content)).toEqual({
-                email: {
-                    type: "string"
-                },
-                full_name: {
-                    type: "string"
-                }
+                email: "string",
+                full_name:  "string"
             })
         );
 });
@@ -99,9 +96,7 @@ test("Add attribute to non-existing class", () => {
         .then(() => FS.promises.readFile("./test-data/model/no_class.json", "utf8"))
         .then((content) => expect(JSON.parse(content)).toEqual(
             {
-                name: {
-                    type: "string"
-                }
+                name: "string"
             }
         ));
 });
@@ -134,13 +129,41 @@ test("Add attribute to existing class", () => {
         .then(() => FS.promises.readFile("./test-data/model/exist_class.json", "utf8"))
         .then((content) => expect(JSON.parse(content)).toEqual(
             {
-                name: {
-                    type: "string"
-                },
-                ref: {
-                    target: "no_class",
-                    type: "reference"
-                }
+                name:  "string",
+                ref: "no_class"
+            }
+        ));
+});
+
+test("Update attribute target", () => {
+    // Setup
+    const subject = new ModelWriter("./test-data/model");
+    const prepare = subject.apply({
+        attr: {
+            target: "no_class",
+            type: SMPrimitive.REFERENCE,
+        },
+        id: "exist_class3:ref",
+        op: PatchOp.UPSERT,
+        type: TYPE_ATTRIBUTE,
+    });
+
+    // Execute
+    const promise = prepare.then(() => subject.apply({
+        attr: {
+            target: "other"
+        },
+        id: "exist_class3:ref",
+        op: PatchOp.UPDATE,
+        type: TYPE_ATTRIBUTE,
+    }));
+
+    // Verify
+    return promise 
+        .then(() => FS.promises.readFile("./test-data/model/exist_class3.json", "utf8"))
+        .then((content) => expect(JSON.parse(content)).toEqual(
+            {
+                ref: "other"
             }
         ));
 });
@@ -175,14 +198,9 @@ test("Delete attribute from existing class", () => {
     // Verify
     return promise 
         .then(() => FS.promises.readFile("./test-data/model/exist_class2.json", "utf8"))
-        .then((content) => expect(JSON.parse(content)).toEqual(
-            {
-                ref: {
-                    target: "no_class",
-                    type: "reference"
-                }
-            }
-        ));
+        .then((content) => expect(JSON.parse(content)).toEqual({
+                ref: "no_class"
+            }));
 });
 
 test("Delete attribute from non-existing class", () => {

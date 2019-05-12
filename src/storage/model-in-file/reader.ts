@@ -1,5 +1,5 @@
 import * as FS from "fs";
-import { IPatch, IPatchConsumer, PatchOp } from "state-glue";
+import { IPatch, IPatchConsumer, PatchOp, SMPrimitive } from "state-glue";
 
 export const TYPE_CLASS = "class";
 export const TYPE_ATTRIBUTE = "attribute";
@@ -30,12 +30,18 @@ export class ModelReader {
 
         const json = JSON.parse(content);
         Object.keys(json).forEach(key => {
+            let type = json[key];
+            let target = null;
+            if (!Object.values(SMPrimitive).includes(type)) {
+                target = type;
+                type = SMPrimitive.REFERENCE;
+            }
             consumer.apply({
                 attr: {
                     class: name,
                     name: key,
-                    target: json[key].target || null,
-                    type: json[key].type
+                    target,
+                    type
                 },
                 id: name + ":" + key,
                 op: PatchOp.UPSERT,

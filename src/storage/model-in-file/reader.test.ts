@@ -94,7 +94,7 @@ test("Test reader", () => {
                 {
                     attr: {
                         name: "subject",
-                        target: "any",
+                        target: null,
                         type: "reference"
                     },
                     id: "task:subject",
