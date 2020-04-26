@@ -6,13 +6,13 @@ export const TYPE_ATTRIBUTE = "attribute";
 
 export class ModelReader {
     public readAsPatch(folder: string, consumer: IPatchConsumer): Promise<number> {
-        return FS.promises.readdir(folder).then(names => {
+        return FS.promises.readdir(folder).then((names) => {
             const readers = [];
-            names.forEach(name => {
+            names.forEach((name) => {
                 readers.push(
                     FS.promises
                         .readFile(folder + "/" + name, "utf8")
-                        .then(content => this.processClassFile(name, content, consumer))
+                        .then((content) => this.processClassFile(name, content, consumer))
                 );
             });
             return Promise.all(readers).then(() => names.length);
@@ -25,11 +25,11 @@ export class ModelReader {
             attr: {},
             id: name,
             op: PatchOp.UPSERT,
-            type: TYPE_CLASS
+            type: TYPE_CLASS,
         } as IPatch);
 
         const json = JSON.parse(content);
-        Object.keys(json).forEach(key => {
+        Object.keys(json).forEach((key) => {
             let type = json[key];
             let target = null;
             if (!Object.values(SMPrimitive).includes(type)) {
@@ -41,11 +41,11 @@ export class ModelReader {
                     class: name,
                     name: key,
                     target,
-                    type
+                    type,
                 },
                 id: name + ":" + key,
                 op: PatchOp.UPSERT,
-                type: TYPE_ATTRIBUTE
+                type: TYPE_ATTRIBUTE,
             } as IPatch);
         });
     }

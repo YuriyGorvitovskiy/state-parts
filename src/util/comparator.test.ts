@@ -6,7 +6,7 @@ import {
     compareNumber,
     comparePrimitive,
     joinComparator,
-    recordComparator
+    recordComparator,
 } from "./comparator";
 
 test("Check compareBoolean(true, true)", () => {
@@ -240,11 +240,11 @@ test("Check recordComparator('num')", () => {
     // Setup
     const r1 = {
         num: 123,
-        str: "hello"
+        str: "hello",
     };
     const r2 = {
         num: 321,
-        str: "alien"
+        str: "alien",
     };
 
     // Execute
@@ -258,11 +258,11 @@ test("Check recordComparator('str', true)", () => {
     // Setup
     const r1 = {
         num: 123,
-        str: "hello"
+        str: "hello",
     };
     const r2 = {
         num: 321,
-        str: "world"
+        str: "world",
     };
 
     // Execute

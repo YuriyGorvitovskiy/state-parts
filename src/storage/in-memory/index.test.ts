@@ -6,29 +6,29 @@ const unique: string = "Unique";
 const double: string = "Double";
 const record1: IRecord = {
     name: unique,
-    value: "value1"
+    value: "value1",
 };
 const record2: IRecord = {
     name: double,
-    value: "value2"
+    value: "value2",
 };
 const record3: IRecord = {
     name: double,
-    value: "value3"
+    value: "value3",
 };
 
 const record4: IRecord = {
     name: "",
-    value: "value4"
+    value: "value4",
 };
 
 const record5: IRecord = {
     name: null,
-    value: "value5"
+    value: "value5",
 };
 
 const record6: IRecord = {
-    value: "value6"
+    value: "value6",
 };
 
 let subject: Index = null;

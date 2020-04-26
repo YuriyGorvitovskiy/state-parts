@@ -5,7 +5,7 @@
     "main": "build/js/index.js",
     "types": "build/js/index.d.ts",
     "scripts": {
-        "upgrade-dep": "ncu -u",
+        "upgrade-dep": "npx npm-check-updates -u && npm install",
         "compile": "tsc",
         "format": "prettier --write \"src/**/*.ts\" .prettierrc jest.config.js package.json tsconfig.json tslint.json",
         "lint": "tslint -p tsconfig.json",
@@ -22,18 +22,19 @@
         "state-glue": "../state-glue"
     },
     "devDependencies": {
-        "@types/jest": "24.0.12",
-        "jest": "24.8.0",
-        "npm-check-updates": "3.1.9",
-        "prettier": "1.17.0",
-        "ts-jest": "24.0.2",
-        "ts-loader": "6.0.0",
-        "ts-node": "8.1.0",
-        "tslint": "5.16.0",
+        "@types/jest": "25.2.1",
+        "@types/node": "13.13.2",
+        "jest": "25.4.0",
+        "npm-check-updates": "4.1.2",
+        "prettier": "2.0.5",
+        "ts-jest": "25.4.0",
+        "ts-loader": "7.0.1",
+        "ts-node": "8.9.1",
+        "tslint": "6.1.1",
         "tslint-config-prettier": "1.18.0",
-        "typedoc": "0.14.2",
-        "typescript": "3.4.5",
-        "webpack": "4.31.0",
-        "webpack-cli": "3.3.2"
+        "typedoc": "0.17.4",
+        "typescript": "3.8.3",
+        "webpack": "4.43.0",
+        "webpack-cli": "3.3.11"
     }
 }

@@ -19,7 +19,7 @@ export class Index {
 
         if (null != prevValue) {
             let matchingRecords = this.records[prevValue as string];
-            matchingRecords = matchingRecords.filter(r => r !== prev);
+            matchingRecords = matchingRecords.filter((r) => r !== prev);
             if (0 === matchingRecords.length) {
                 delete this.records[prevValue as string];
                 this.keyCount--;
@@ -49,7 +49,7 @@ export class Index {
 
     public getForAll(value: primitive[]): IRecord[] {
         let result = [];
-        value.forEach(v => (result = result.concat(this.get(v))));
+        value.forEach((v) => (result = result.concat(this.get(v))));
         return result;
     }
 

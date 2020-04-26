@@ -32,11 +32,11 @@ export class ModelWriter implements IPatchConsumer {
         return FS.promises
             .readFile(file, "utf8")
             .catch(() => "{}")
-            .then(content => {
+            .then((content) => {
                 const attrMap = JSON.parse(content);
                 let type = attrMap[idSplit.attr];
                 let target = null;
-                if ( null != type && !Object.values(SMPrimitive).includes(type)) {
+                if (null != type && !Object.values(SMPrimitive).includes(type)) {
                     target = type;
                     type = SMPrimitive.REFERENCE;
                 }
@@ -55,7 +55,7 @@ export class ModelWriter implements IPatchConsumer {
         const file = this.folder + "/" + idSplit.class + ".json";
         return FS.promises
             .readFile(file, "utf8")
-            .then(content => {
+            .then((content) => {
                 const attrMap = JSON.parse(content);
                 delete attrMap[idSplit.attr];
                 return FS.promises.writeFile(file, JSON.stringify(attrMap, null, 2), { encoding: "utf8", flag: "w" });
@@ -77,7 +77,7 @@ export class ModelWriter implements IPatchConsumer {
         const index = attrId.indexOf(":");
         return {
             attr: attrId.substr(index + 1),
-            class: attrId.substr(0, index)
+            class: attrId.substr(0, index),
         };
     }
 }

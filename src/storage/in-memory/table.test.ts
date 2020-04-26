@@ -18,7 +18,7 @@ test("Test constructor", () => {
     expect((result as any).records).toEqual({});
     expect((result as any).indexes).toEqual({
         assignee: new Index(ATTR_ASSIGNEE),
-        title: new Index(ATTR_TITLE)
+        title: new Index(ATTR_TITLE),
     });
     expect((result as any).totalCount).toBe(0);
 });
@@ -30,11 +30,11 @@ test("Test apply insert patch", () => {
         attr: {
             assignee: "234",
             description: "write unit test to insert patch",
-            title: "write the test"
+            title: "write the test",
         },
         id: "123",
         op: PatchOp.UPSERT,
-        type: TYPE_TASK
+        type: TYPE_TASK,
     };
 
     // Execute
@@ -47,19 +47,19 @@ test("Test apply insert patch", () => {
     const promise = subject.select({
         attr: [ATTR_ASSIGNEE, ATTR_DESCRIPTION, ATTR_TITLE],
         filter: {},
-        type: TYPE_TASK
+        type: TYPE_TASK,
     });
-    return promise.then(result =>
+    return promise.then((result) =>
         expect(result).toEqual([
             {
                 attr: {
                     assignee: "234",
                     description: "write unit test to insert patch",
-                    title: "write the test"
+                    title: "write the test",
                 },
                 id: "123",
-                type: TYPE_TASK
-            }
+                type: TYPE_TASK,
+            },
         ] as IEntity[])
     );
 });
@@ -71,11 +71,11 @@ test("Test apply upsert patch", () => {
         attr: {
             assignee: "234",
             description: "write unit test to insert patch",
-            title: "write the test"
+            title: "write the test",
         },
         id: "123",
         op: PatchOp.UPSERT,
-        type: TYPE_TASK
+        type: TYPE_TASK,
     };
     subject.apply(patchBefore);
 
@@ -83,11 +83,11 @@ test("Test apply upsert patch", () => {
         attr: {
             assignee: "234",
             description: "write unit test to upsert patch",
-            title: "write another the test"
+            title: "write another the test",
         },
         id: "123",
         op: PatchOp.UPSERT,
-        type: TYPE_TASK
+        type: TYPE_TASK,
     };
 
     // Execute
@@ -100,19 +100,19 @@ test("Test apply upsert patch", () => {
     const promise = subject.select({
         attr: [ATTR_ASSIGNEE, ATTR_DESCRIPTION, ATTR_TITLE],
         filter: {},
-        type: TYPE_TASK
+        type: TYPE_TASK,
     });
-    return promise.then(result =>
+    return promise.then((result) =>
         expect(result).toEqual([
             {
                 attr: {
                     assignee: "234",
                     description: "write unit test to upsert patch",
-                    title: "write another the test"
+                    title: "write another the test",
                 },
                 id: "123",
-                type: TYPE_TASK
-            }
+                type: TYPE_TASK,
+            },
         ] as IEntity[])
     );
 });
@@ -122,11 +122,11 @@ test("Test apply upsert patch for wrong type", () => {
     const subject = new Table(TYPE_TASK, ATTR_ASSIGNEE, ATTR_TITLE);
     const patch: IPatch = {
         attr: {
-            name: "Tom"
+            name: "Tom",
         },
         id: "123",
         op: PatchOp.UPSERT,
-        type: TYPE_USER
+        type: TYPE_USER,
     };
 
     // Execute
@@ -139,9 +139,9 @@ test("Test apply upsert patch for wrong type", () => {
     const promise = subject.select({
         attr: [ATTR_ASSIGNEE, ATTR_DESCRIPTION, ATTR_TITLE],
         filter: {},
-        type: TYPE_TASK
+        type: TYPE_TASK,
     });
-    return promise.then(result => expect(result).toEqual([]));
+    return promise.then((result) => expect(result).toEqual([]));
 });
 
 test("Test apply update patch", () => {
@@ -151,22 +151,22 @@ test("Test apply update patch", () => {
         attr: {
             assignee: "234",
             description: "write unit test to insert patch",
-            title: "write the test"
+            title: "write the test",
         },
         id: "123",
         op: PatchOp.UPSERT,
-        type: TYPE_TASK
+        type: TYPE_TASK,
     };
     subject.apply(patchBefore);
 
     const patch: IPatch = {
         attr: {
             assignee: "234",
-            description: "write unit test to update patch"
+            description: "write unit test to update patch",
         },
         id: "123",
         op: PatchOp.UPDATE,
-        type: TYPE_TASK
+        type: TYPE_TASK,
     };
 
     // Execute
@@ -179,19 +179,19 @@ test("Test apply update patch", () => {
     const promise = subject.select({
         attr: [ATTR_ASSIGNEE, ATTR_DESCRIPTION, ATTR_TITLE],
         filter: {},
-        type: TYPE_TASK
+        type: TYPE_TASK,
     });
-    return promise.then(result =>
+    return promise.then((result) =>
         expect(result).toEqual([
             {
                 attr: {
                     assignee: "234",
                     description: "write unit test to update patch",
-                    title: "write the test"
+                    title: "write the test",
                 },
                 id: "123",
-                type: TYPE_TASK
-            }
+                type: TYPE_TASK,
+            },
         ] as IEntity[])
     );
 });
@@ -202,11 +202,11 @@ test("Test apply update patch of not existing record", () => {
     const patch: IPatch = {
         attr: {
             assignee: "234",
-            description: "write unit test to update patch"
+            description: "write unit test to update patch",
         },
         id: "123",
         op: PatchOp.UPDATE,
-        type: TYPE_TASK
+        type: TYPE_TASK,
     };
 
     // Execute
@@ -219,9 +219,9 @@ test("Test apply update patch of not existing record", () => {
     const promise = subject.select({
         attr: [ATTR_ASSIGNEE, ATTR_DESCRIPTION, ATTR_TITLE],
         filter: {},
-        type: TYPE_TASK
+        type: TYPE_TASK,
     });
-    return promise.then(result => expect(result).toEqual([]));
+    return promise.then((result) => expect(result).toEqual([]));
 });
 
 test("Test apply delete patch", () => {
@@ -231,18 +231,18 @@ test("Test apply delete patch", () => {
         attr: {
             assignee: "234",
             description: "write unit test to insert patch",
-            title: "write the test"
+            title: "write the test",
         },
         id: "123",
         op: PatchOp.UPSERT,
-        type: TYPE_TASK
+        type: TYPE_TASK,
     };
     subject.apply(patchBefore);
 
     const patch: IPatch = {
         id: "123",
         op: PatchOp.DELETE,
-        type: TYPE_TASK
+        type: TYPE_TASK,
     };
 
     // Execute
@@ -255,9 +255,9 @@ test("Test apply delete patch", () => {
     const promise = subject.select({
         attr: [ATTR_ASSIGNEE, ATTR_DESCRIPTION, ATTR_TITLE],
         filter: {},
-        type: TYPE_TASK
+        type: TYPE_TASK,
     });
-    return promise.then(result => expect(result).toEqual([]));
+    return promise.then((result) => expect(result).toEqual([]));
 });
 
 test("Test apply delete patch of not existing record", () => {
@@ -266,7 +266,7 @@ test("Test apply delete patch of not existing record", () => {
     const patch: IPatch = {
         id: "123",
         op: PatchOp.DELETE,
-        type: TYPE_TASK
+        type: TYPE_TASK,
     };
 
     // Execute
@@ -279,9 +279,9 @@ test("Test apply delete patch of not existing record", () => {
     const promise = subject.select({
         attr: [ATTR_ASSIGNEE, ATTR_DESCRIPTION, ATTR_TITLE],
         filter: {},
-        type: TYPE_TASK
+        type: TYPE_TASK,
     });
-    return promise.then(result => expect(result).toEqual([]));
+    return promise.then((result) => expect(result).toEqual([]));
 });
 
 function prepareTableForSelect(): Table {
@@ -289,47 +289,47 @@ function prepareTableForSelect(): Table {
     subject.apply({
         attr: {
             description: "Desription C",
-            title: "task1"
+            title: "task1",
         },
         id: "1",
         op: PatchOp.UPSERT,
-        type: TYPE_TASK
+        type: TYPE_TASK,
     });
     subject.apply({
         attr: {
             description: "Desription A",
-            title: "task2"
+            title: "task2",
         },
         id: "2",
         op: PatchOp.UPSERT,
-        type: TYPE_TASK
+        type: TYPE_TASK,
     });
     subject.apply({
         attr: {
             description: "Desription B",
-            title: "task3"
+            title: "task3",
         },
         id: "3",
         op: PatchOp.UPSERT,
-        type: TYPE_TASK
+        type: TYPE_TASK,
     });
     subject.apply({
         attr: {
             description: "Desription E",
-            title: "task4"
+            title: "task4",
         },
         id: "4",
         op: PatchOp.UPSERT,
-        type: TYPE_TASK
+        type: TYPE_TASK,
     });
     subject.apply({
         attr: {
             description: "Desription D",
-            title: "task5"
+            title: "task5",
         },
         id: "5",
         op: PatchOp.UPSERT,
-        type: TYPE_TASK
+        type: TYPE_TASK,
     });
 
     return subject;
@@ -343,26 +343,26 @@ test("Test select by id", () => {
     const promise = subject.select({
         attr: [ATTR_TITLE],
         filter: { id: [null, "2", "1", "wrong"] },
-        type: TYPE_TASK
+        type: TYPE_TASK,
     });
 
     // Verify
-    return promise.then(result =>
+    return promise.then((result) =>
         expect(result).toEqual([
             {
                 attr: {
-                    title: "task2"
+                    title: "task2",
                 },
                 id: "2",
-                type: TYPE_TASK
+                type: TYPE_TASK,
             },
             {
                 attr: {
-                    title: "task1"
+                    title: "task1",
                 },
                 id: "1",
-                type: TYPE_TASK
-            }
+                type: TYPE_TASK,
+            },
         ] as IEntity[])
     );
 });
@@ -375,26 +375,26 @@ test("Test select by index", () => {
     const promise = subject.select({
         attr: [ATTR_TITLE],
         filter: { title: ["task2", "task4", "wrong"] },
-        type: TYPE_TASK
+        type: TYPE_TASK,
     });
 
     // Verify
-    return promise.then(result =>
+    return promise.then((result) =>
         expect(result).toEqual([
             {
                 attr: {
-                    title: "task2"
+                    title: "task2",
                 },
                 id: "2",
-                type: TYPE_TASK
+                type: TYPE_TASK,
             },
             {
                 attr: {
-                    title: "task4"
+                    title: "task4",
                 },
                 id: "4",
-                type: TYPE_TASK
-            }
+                type: TYPE_TASK,
+            },
         ] as IEntity[])
     );
 });
@@ -410,29 +410,29 @@ test("Test select by non index value", () => {
         sort: [
             {
                 attr: "id",
-                desc: true
-            }
+                desc: true,
+            },
         ],
-        type: TYPE_TASK
+        type: TYPE_TASK,
     });
 
     // Verify
-    return promise.then(result =>
+    return promise.then((result) =>
         expect(result).toEqual([
             {
                 attr: {
-                    title: "task3"
+                    title: "task3",
                 },
                 id: "3",
-                type: TYPE_TASK
+                type: TYPE_TASK,
             },
             {
                 attr: {
-                    title: "task1"
+                    title: "task1",
                 },
                 id: "1",
-                type: TYPE_TASK
-            }
+                type: TYPE_TASK,
+            },
         ] as IEntity[])
     );
 });
@@ -447,29 +447,29 @@ test("Test select by index with sorting and pagination", () => {
         filter: { title: ["task1", "task2", "task3", "task4", "task5"] },
         page: {
             from: 2,
-            max: 2
+            max: 2,
         },
         sort: [{ attr: ATTR_DESCRIPTION }],
-        type: TYPE_TASK
+        type: TYPE_TASK,
     });
 
     // Verify
-    return promise.then(result =>
+    return promise.then((result) =>
         expect(result).toEqual([
             {
                 attr: {
-                    description: "Desription C"
+                    description: "Desription C",
                 },
                 id: "1",
-                type: TYPE_TASK
+                type: TYPE_TASK,
             },
             {
                 attr: {
-                    description: "Desription D"
+                    description: "Desription D",
                 },
                 id: "5",
-                type: TYPE_TASK
-            }
+                type: TYPE_TASK,
+            },
         ] as IEntity[])
     );
 });
@@ -482,17 +482,17 @@ test("Test select without attribute", () => {
     const promise = subject.select({
         attr: null,
         filter: { title: ["task1"] },
-        type: TYPE_TASK
+        type: TYPE_TASK,
     });
 
     // Verify
-    return promise.then(result =>
+    return promise.then((result) =>
         expect(result).toEqual([
             {
                 attr: {},
                 id: "1",
-                type: TYPE_TASK
-            }
+                type: TYPE_TASK,
+            },
         ] as IEntity[])
     );
 });
@@ -507,12 +507,12 @@ test("Test select nothing with sorting and pagination", () => {
         filter: { id: [null, undefined, "wrong"] },
         page: {
             from: 2,
-            max: 2
+            max: 2,
         },
         sort: [{ attr: ATTR_DESCRIPTION }],
-        type: TYPE_TASK
+        type: TYPE_TASK,
     });
 
     // Verify
-    return promise.then(result => expect(result).toEqual([]));
+    return promise.then((result) => expect(result).toEqual([]));
 });

@@ -43,10 +43,10 @@ export function comparePrimitive(a: Glue.primitive, b: Glue.primitive): number {
     return 0;
 }
 
-export function joinComparator<P>(...comparators: Array<Comparator<P>>): Comparator<P> {
+export function joinComparator<P>(...comparators: Comparator<P>[]): Comparator<P> {
     return (a: P, b: P) => {
         let cmp = 0;
-        comparators.find(c => 0 !== (cmp = c(a, b)));
+        comparators.find((c) => 0 !== (cmp = c(a, b)));
         return cmp;
     };
 }

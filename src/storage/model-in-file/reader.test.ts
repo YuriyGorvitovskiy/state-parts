@@ -17,98 +17,98 @@ test("Test reader", () => {
                 attr: [],
                 filter: {},
                 sort: [{ attr: "id" }],
-                type: "class"
+                type: "class",
             })
         )
-        .then(e =>
+        .then((e) =>
             expect(e).toEqual([
                 {
                     attr: {},
                     id: "task",
-                    type: "class"
+                    type: "class",
                 },
                 {
                     attr: {},
                     id: "user",
-                    type: "class"
-                }
+                    type: "class",
+                },
             ])
         )
         .then(() =>
             storage.select({
                 attr: ["name", "type", "target"],
                 filter: {
-                    class: ["task"]
+                    class: ["task"],
                 },
                 sort: [{ attr: "id" }],
-                type: "attribute"
+                type: "attribute",
             })
         )
-        .then(e =>
+        .then((e) =>
             expect(e).toEqual([
                 {
                     attr: {
                         name: "assignee",
                         target: "user",
-                        type: "reference"
+                        type: "reference",
                     },
                     id: "task:assignee",
-                    type: "attribute"
+                    type: "attribute",
                 },
                 {
                     attr: {
                         name: "description",
                         target: null,
-                        type: "text"
+                        type: "text",
                     },
                     id: "task:description",
-                    type: "attribute"
+                    type: "attribute",
                 },
                 {
                     attr: {
                         name: "due",
                         target: null,
-                        type: "timestamp"
+                        type: "timestamp",
                     },
                     id: "task:due",
-                    type: "attribute"
+                    type: "attribute",
                 },
                 {
                     attr: {
                         name: "name",
                         target: null,
-                        type: "string"
+                        type: "string",
                     },
                     id: "task:name",
-                    type: "attribute"
+                    type: "attribute",
                 },
                 {
                     attr: {
                         name: "state",
                         target: null,
-                        type: "string"
+                        type: "string",
                     },
                     id: "task:state",
-                    type: "attribute"
+                    type: "attribute",
                 },
                 {
                     attr: {
                         name: "subject",
                         target: null,
-                        type: "reference"
+                        type: "reference",
                     },
                     id: "task:subject",
-                    type: "attribute"
+                    type: "attribute",
                 },
                 {
                     attr: {
                         name: "subject_type",
                         target: "class",
-                        type: "reference"
+                        type: "reference",
                     },
                     id: "task:subject_type",
-                    type: "attribute"
-                }
+                    type: "attribute",
+                },
             ])
         );
 });

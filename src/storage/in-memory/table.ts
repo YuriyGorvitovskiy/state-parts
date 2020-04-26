@@ -8,7 +8,7 @@ import {
     ISelector,
     ISorting,
     PatchOp,
-    primitive
+    primitive,
 } from "state-glue";
 import { Comparator, joinComparator, recordComparator } from "../../util/comparator";
 import { isEmpty } from "../../util/container";
@@ -31,7 +31,7 @@ export class Table implements IPatchConsumer, IEntityProvider {
         this.patchOp[PatchOp.DELETE] = this.delete.bind(this);
 
         this.type = type;
-        indexAttr.forEach(attr => (this.indexes[attr] = new Index(attr)));
+        indexAttr.forEach((attr) => (this.indexes[attr] = new Index(attr)));
     }
 
     public apply(patch: IPatch): void {
@@ -42,7 +42,7 @@ export class Table implements IPatchConsumer, IEntityProvider {
     }
 
     public select(selector: ISelector): Promise<IEntity[]> {
-        return new Promise<IEntity[]>(resolve => {
+        return new Promise<IEntity[]>((resolve) => {
             if (this.type !== selector.type || 0 === this.totalCount) {
                 resolve([]);
             }
@@ -65,8 +65,8 @@ export class Table implements IPatchConsumer, IEntityProvider {
         let result = this.filterByIndex(indexAttr, filter[indexAttr]);
 
         // Filter the rest of the records
-        result = result.filter(r =>
-            Object.keys(filter).every(attr => indexAttr === attr || 0 <= filter[attr].indexOf(r[attr]))
+        result = result.filter((r) =>
+            Object.keys(filter).every((attr) => indexAttr === attr || 0 <= filter[attr].indexOf(r[attr]))
         );
 
         return result;
@@ -75,7 +75,7 @@ export class Table implements IPatchConsumer, IEntityProvider {
     private selectIndexAttr(filter: IFilter): string {
         let indexAttr = null;
         let recordsCount = this.totalCount;
-        Object.keys(filter).forEach(attr => {
+        Object.keys(filter).forEach((attr) => {
             let valuesCount = recordsCount;
             const index = this.indexes[attr];
             if (null != index) {
@@ -108,7 +108,7 @@ export class Table implements IPatchConsumer, IEntityProvider {
 
     private getForAll(ids: primitive[]): IRecord[] {
         const result = [];
-        ids.forEach(v => {
+        ids.forEach((v) => {
             const record = this.get(v);
             if (null != record) {
                 result.push(record);
@@ -121,8 +121,8 @@ export class Table implements IPatchConsumer, IEntityProvider {
         if (isEmpty(sort) || isEmpty(records)) {
             return records;
         }
-        const comparators: Array<Comparator<IRecord>> = [];
-        sort.forEach(s => comparators.push(recordComparator(s.attr, s.desc)));
+        const comparators: Comparator<IRecord>[] = [];
+        sort.forEach((s) => comparators.push(recordComparator(s.attr, s.desc)));
         return records.sort(joinComparator(...comparators));
     }
     private page(records: IRecord[], page: IPage): IRecord[] {
@@ -137,14 +137,14 @@ export class Table implements IPatchConsumer, IEntityProvider {
             return [];
         }
         const result: IEntity[] = [];
-        records.forEach(r => {
+        records.forEach((r) => {
             const entity: IEntity = {
                 attr: {},
                 id: r[Table.ID] as string,
-                type: this.type
+                type: this.type,
             };
             if (null != attr) {
-                attr.forEach(a => (entity.attr[a] = r[a]));
+                attr.forEach((a) => (entity.attr[a] = r[a]));
             }
             result.push(entity);
         });
@@ -159,7 +159,7 @@ export class Table implements IPatchConsumer, IEntityProvider {
             this.totalCount++;
         }
 
-        Object.values(this.indexes).forEach(idx => idx.update(prev, next));
+        Object.values(this.indexes).forEach((idx) => idx.update(prev, next));
     }
 
     private update(patch: IPatch): void {
@@ -175,6 +175,6 @@ export class Table implements IPatchConsumer, IEntityProvider {
             this.totalCount--;
         }
 
-        Object.values(this.indexes).forEach(idx => idx.update(prev, null));
+        Object.values(this.indexes).forEach((idx) => idx.update(prev, null));
     }
 }

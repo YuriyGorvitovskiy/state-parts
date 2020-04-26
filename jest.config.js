@@ -1,9 +1,9 @@
 module.exports = {
     transform: {
-        "^.+\\.tsx?$": "ts-jest"
+        "^.+\\.tsx?$": "ts-jest",
     },
     testEnvironment: "node",
     testRegex: "\\.test\\.tsx?$",
     moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
-    coverageDirectory: "build/coverage"
+    coverageDirectory: "build/coverage",
 };

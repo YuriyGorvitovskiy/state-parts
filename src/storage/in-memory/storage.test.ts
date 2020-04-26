@@ -17,17 +17,17 @@ beforeEach(() => {
     consumer.apply({
         id: TYPE_CLASS,
         op: PatchOp.UPSERT,
-        type: TYPE_CLASS
+        type: TYPE_CLASS,
     });
     consumer.apply({
         id: TYPE_ATTRIBUTE,
         op: PatchOp.UPSERT,
-        type: TYPE_CLASS
+        type: TYPE_CLASS,
     });
     consumer.apply({
         id: TYPE_TASK,
         op: PatchOp.UPSERT,
-        type: TYPE_CLASS
+        type: TYPE_CLASS,
     });
 });
 
@@ -36,7 +36,7 @@ test("Upsert patch", () => {
     const patch: IPatch = {
         id: TYPE_USER,
         op: PatchOp.UPSERT,
-        type: TYPE_CLASS
+        type: TYPE_CLASS,
     };
 
     // Execute
@@ -46,18 +46,18 @@ test("Upsert patch", () => {
     const selector: ISelector = {
         attr: [],
         filter: {
-            id: [TYPE_USER]
+            id: [TYPE_USER],
         },
-        type: TYPE_CLASS
+        type: TYPE_CLASS,
     };
 
-    return provider.select(selector).then(result => {
+    return provider.select(selector).then((result) => {
         expect(result).toEqual([
             {
                 attr: {},
                 id: TYPE_USER,
-                type: TYPE_CLASS
-            }
+                type: TYPE_CLASS,
+            },
         ] as IEntity[]);
     });
 });
@@ -67,31 +67,31 @@ test("Select 2 entities by id", () => {
     const selector: ISelector = {
         attr: ["id"],
         filter: {
-            id: [TYPE_ATTRIBUTE, TYPE_TASK]
+            id: [TYPE_ATTRIBUTE, TYPE_TASK],
         },
-        type: TYPE_CLASS
+        type: TYPE_CLASS,
     };
 
     // Execute
     const promise = provider.select(selector);
 
     // Verify
-    return promise.then(result => {
+    return promise.then((result) => {
         expect(result).toEqual([
             {
                 attr: {
-                    id: TYPE_ATTRIBUTE
+                    id: TYPE_ATTRIBUTE,
                 },
                 id: TYPE_ATTRIBUTE,
-                type: TYPE_CLASS
+                type: TYPE_CLASS,
             },
             {
                 attr: {
-                    id: TYPE_TASK
+                    id: TYPE_TASK,
                 },
                 id: TYPE_TASK,
-                type: TYPE_CLASS
-            }
+                type: TYPE_CLASS,
+            },
         ] as IEntity[]);
     });
 });
@@ -101,16 +101,16 @@ test("Select non-existing type", () => {
     const selector: ISelector = {
         attr: ["id"],
         filter: {
-            id: [TYPE_ATTRIBUTE, TYPE_TASK]
+            id: [TYPE_ATTRIBUTE, TYPE_TASK],
         },
-        type: "Something Else"
+        type: "Something Else",
     };
 
     // Execute
     const promise = provider.select(selector);
 
     // Verify
-    return promise.then(result => {
+    return promise.then((result) => {
         expect(result).toEqual([]);
     });
 });

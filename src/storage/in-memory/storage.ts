@@ -5,7 +5,7 @@ export class InMemoryStorage implements IPatchConsumer, IEntityProvider {
     private readonly tables: { [type: string]: Table } = {};
 
     constructor(...tables: Table[]) {
-        tables.forEach(t => (this.tables[t.type] = t));
+        tables.forEach((t) => (this.tables[t.type] = t));
     }
 
     public apply(patch: IPatch): void {
@@ -19,7 +19,7 @@ export class InMemoryStorage implements IPatchConsumer, IEntityProvider {
     public select(selector: ISelector): Promise<IEntity[]> {
         const table = this.tables[selector.type];
         if (null == table) {
-            return new Promise<IEntity[]>(resolve => resolve([]));
+            return new Promise<IEntity[]>((resolve) => resolve([]));
         }
         return table.select(selector);
     }
