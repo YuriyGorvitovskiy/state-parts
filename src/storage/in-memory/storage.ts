@@ -23,4 +23,10 @@ export class InMemoryStorage implements IPatchConsumer, IEntityProvider {
         }
         return table.select(selector);
     }
+
+    public clear() {
+        for (const type of Object.keys(this.tables)) {
+            this.tables[type] = this.tables[type].emptyCopy();
+        }
+    }
 }

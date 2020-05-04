@@ -53,6 +53,10 @@ export class Table implements IPatchConsumer, IEntityProvider {
         });
     }
 
+    public emptyCopy(): Table {
+        return new Table(this.type, ...Object.keys(this.indexes));
+    }
+
     private filter(filter: IFilter): IRecord[] {
         if (isEmpty(Object.keys(filter))) {
             return Object.values(this.records);
