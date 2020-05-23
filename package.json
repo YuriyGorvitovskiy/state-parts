@@ -19,7 +19,9 @@
     "author": "Yuriy Gorvitovskiy",
     "license": "ISC",
     "dependencies": {
-        "state-glue": "../state-glue"
+        "immutable": "4.0.0-rc.12",
+        "state-glue": "../state-glue",
+        "sqlstring": "2.3.2"
     },
     "devDependencies": {
         "@types/jest": "25.2.1",
