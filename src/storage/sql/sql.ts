@@ -1,5 +1,5 @@
 import { Map } from "immutable";
-import { primitive, PrimitiveName } from "./primitive";
+import { primitive, PrimitiveName, GeoLocation } from "./primitive";
 
 export type ToLiteral<T extends primitive> = (value: T) => string;
 
@@ -12,7 +12,7 @@ export interface LiteralMappingDefinition extends PrimitiveMapping<ToLiteral<any
     readonly binary: ToLiteral<ArrayBuffer>;
     readonly integer: ToLiteral<number>;
     readonly double: ToLiteral<number>;
-    readonly geolocation: ToLiteral<string>;
+    readonly geolocation: ToLiteral<GeoLocation>;
     readonly string: ToLiteral<string>;
     readonly timestamp: ToLiteral<Date>;
 };

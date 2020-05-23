@@ -1,3 +1,8 @@
-export type primitive = boolean | number | string | Date | ArrayBuffer;
+export interface GeoLocation {
+    latitude: number,
+    longitude: number,
+}
 
-export type PrimitiveName = 'binary' | 'boolean' | 'integer' | 'double' | 'geolocation' | 'string' | 'timestamp';
+export type primitive = boolean | number | string | Date | ArrayBuffer | GeoLocation;
+
+export type PrimitiveName = 'binary' | 'boolean' | 'double' | 'geolocation' | 'integer' | 'string' | 'timestamp';
