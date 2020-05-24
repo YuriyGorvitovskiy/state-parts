@@ -1,28 +1,50 @@
-import { Map } from "immutable";
-import { primitive, PrimitiveName, GeoLocation } from "./primitive";
+import { List, Map } from "immutable";
+import * as PR from "./primitive";
 
-export type ToLiteral<T extends primitive> = (value: T) => string;
+export type ToLiteral<T extends PR.PrimitiveName> = (value: PR.primitiveOf<T>) => string;
 
-type PrimitiveMapping<T> = {
-    readonly [key in PrimitiveName]: T
+export type LiteralMappingDefinition = {
+    [key in PR.PrimitiveName]: ToLiteral<key>
 };
 
-export interface LiteralMappingDefinition extends PrimitiveMapping<ToLiteral<any>> {
-    readonly boolean: ToLiteral<boolean>;
-    readonly binary: ToLiteral<ArrayBuffer>;
-    readonly integer: ToLiteral<number>;
-    readonly double: ToLiteral<number>;
-    readonly geolocation: ToLiteral<GeoLocation>;
-    readonly string: ToLiteral<string>;
-    readonly timestamp: ToLiteral<Date>;
-};
-
-export type LiteralMapping = Map<PrimitiveName, ToLiteral<any>>
+export type LiteralMapping = Map<PR.PrimitiveName, ToLiteral<any>>
 
 export interface Engine {
     readonly literalMapping: LiteralMapping;
 }
 
-export interface Element {
-    readonly toSql: (engine: Engine) => string;
+export interface ToSqlContext {
+    readonly engine: Engine,
+    readonly indent: string,
+    readonly inExpression: boolean;
 }
+
+export interface Element {
+    readonly toSql: (ctx: ToSqlContext) => string;
+}
+
+export interface Expression<T extends PR.PrimitiveName> extends Element {
+    readonly type: T;
+}
+
+
+export const toSqlOperator = (ctx: ToSqlContext, sqlOperator: string, left: Expression<any>, right: Expression<any>): string => {
+    const subCtx = {
+        ...ctx,
+        inExpression: true
+    }
+    return left.toSql(subCtx) + " " + sqlOperator + " " + right.toSql(subCtx);
+}
+
+export const toSqlArguments = (ctx: ToSqlContext, args: List<Expression<any>>): string => {
+    const subCtx = {
+        ...ctx,
+        inExpression: false
+    }
+    return "(" + args.map(a => a.toSql(subCtx)).join(", ") + ")";
+}
+
+export const toSqlBraceInExpression = (ctx: ToSqlContext, sql: string): string => {
+    return ctx.inExpression ? "(" + sql + ")" : sql;
+}
+

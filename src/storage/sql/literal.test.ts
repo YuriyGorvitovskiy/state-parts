@@ -1,10 +1,17 @@
-import * as SB from "./literal";
+import * as LT from "./literal";
+import * as SQL from "./sql";
 import * as Postgres from "./postgres";
 import { GeoLocation } from "./primitive";
 
+const CTX: SQL.ToSqlContext = {
+    engine: Postgres.engine,
+    indent: "",
+    inExpression: false,
+}
+
 test("Literal binary", () => {
     // Execute
-    const call = () => new SB.Literal('binary', new ArrayBuffer(10)).toSql(Postgres.engine)
+    const call = () => new LT.Literal('binary', new ArrayBuffer(10)).toSql(CTX);
 
     // Success
     expect(call).toThrowError();
@@ -12,8 +19,8 @@ test("Literal binary", () => {
 
 test("Literal boolean", () => {
     // Execute
-    const resultTrue = new SB.Literal('boolean', true).toSql(Postgres.engine)
-    const resultFalse = new SB.Literal('boolean', false).toSql(Postgres.engine)
+    const resultTrue = LT.booleanLiteral(true).toSql(CTX);
+    const resultFalse = LT.booleanLiteral(false).toSql(CTX);
 
     // Success
     expect(resultTrue).toEqual("TRUE");
@@ -22,7 +29,7 @@ test("Literal boolean", () => {
 
 test("Literal double", () => {
     // Execute
-    const result = new SB.Literal('double', -1234.567).toSql(Postgres.engine)
+    const result = LT.doubleLiteral(-1234.567).toSql(CTX);
 
     // Success
     expect(result).toEqual("-1234.567");
@@ -36,7 +43,7 @@ test("Literal geolocation", () => {
     };
 
     // Execute
-    const call = () => new SB.Literal('geolocation', location).toSql(Postgres.engine)
+    const call = () => new LT.Literal('geolocation', location).toSql(CTX);
 
     // Success
     expect(call).toThrowError();
@@ -44,7 +51,7 @@ test("Literal geolocation", () => {
 
 test("Literal integer", () => {
     // Execute
-    const result = new SB.Literal('integer', -1234.3).toSql(Postgres.engine)
+    const result = LT.integerLiteral(-1234.3).toSql(CTX);
 
     // Success
     expect(result).toEqual("-1235");
@@ -52,7 +59,7 @@ test("Literal integer", () => {
 
 test("Literal string", () => {
     // Execute
-    const result = new SB.Literal('string', "It's a SQL strign literal").toSql(Postgres.engine)
+    const result = LT.stringLiteral("It's a SQL strign literal").toSql(CTX);
 
     // Success
     expect(result).toEqual("E'It\\'s a SQL strign literal'");
@@ -61,7 +68,7 @@ test("Literal string", () => {
 
 test("Literal timestamp", () => {
     // Execute
-    const result = new SB.Literal('timestamp', new Date("2020-05-23T16:01:43.789Z")).toSql(Postgres.engine)
+    const result = LT.timestampLiteral(new Date("2020-05-23T16:01:43.789Z")).toSql(CTX);
 
     // Success
     expect(result).toEqual("'2020-05-23T16:01:43.789Z'");
