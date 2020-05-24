@@ -1,7 +1,7 @@
 import { Expression, Engine } from "./sql";
-import { PrimitiveName, primitive } from "./primitive";
+import { PrimitiveType, primitive } from "./primitive";
 
-export class Column<T extends PrimitiveName> implements Expression<T> {
+export class Column<T extends PrimitiveType> implements Expression<T> {
     readonly type: T;
     readonly table: string;
     readonly column: string;
@@ -15,8 +15,8 @@ export class Column<T extends PrimitiveName> implements Expression<T> {
     public toSql(): string {
         return this.table + "." + this.column;
     }
-};
-
-export const column = <T extends PrimitiveName>(type: T, tableName: string, columnName: string): Column<T> => {
-    return new Column<T>(type, tableName, columnName);
 }
+
+export const column = <T extends PrimitiveType>(type: T, tableName: string, columnName: string): Column<T> => {
+    return new Column<T>(type, tableName, columnName);
+};

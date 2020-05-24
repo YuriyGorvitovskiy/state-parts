@@ -7,11 +7,11 @@ const CTX: SQL.ToSqlContext = {
     engine: Postgres.engine,
     indent: "",
     inExpression: false,
-}
+};
 
 test("Literal binary", () => {
     // Execute
-    const call = () => new LT.Literal('binary', new ArrayBuffer(10)).toSql(CTX);
+    const call = () => new LT.Literal("binary", new ArrayBuffer(10)).toSql(CTX);
 
     // Success
     expect(call).toThrowError();
@@ -33,17 +33,17 @@ test("Literal double", () => {
 
     // Success
     expect(result).toEqual("-1234.567");
-})
+});
 
 test("Literal geolocation", () => {
     // Setup
     const location: GeoLocation = {
         latitude: 123.456,
-        longitude: 567.789
+        longitude: 567.789,
     };
 
     // Execute
-    const call = () => new LT.Literal('geolocation', location).toSql(CTX);
+    const call = () => new LT.Literal("geolocation", location).toSql(CTX);
 
     // Success
     expect(call).toThrowError();
@@ -65,7 +65,6 @@ test("Literal string", () => {
     expect(result).toEqual("E'It\\'s a SQL strign literal'");
 });
 
-
 test("Literal timestamp", () => {
     // Execute
     const result = LT.timestampLiteral(new Date("2020-05-23T16:01:43.789Z")).toSql(CTX);
@@ -73,4 +72,3 @@ test("Literal timestamp", () => {
     // Success
     expect(result).toEqual("'2020-05-23T16:01:43.789Z'");
 });
-
