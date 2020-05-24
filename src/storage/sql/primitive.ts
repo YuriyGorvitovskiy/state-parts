@@ -5,7 +5,11 @@ export interface GeoLocation {
 
 export type primitive = boolean | number | string | Date | ArrayBuffer | GeoLocation;
 
-export type PrimitiveName = 'binary' | 'boolean' | 'double' | 'geolocation' | 'integer' | 'string' | 'timestamp';
+export type NumericName = 'double' | 'integer' | 'timestamp';
+export type TextualName = 'string';
+
+export type PrimitiveName = NumericName | TextualName | 'binary' | 'boolean' | 'geolocation';
+
 
 export type primitiveOf<T extends PrimitiveName> =
     T extends 'binary' ? ArrayBuffer :
