@@ -9,8 +9,21 @@ export type LiteralMappingDefinition = {
 
 export type LiteralMapping = Map<PR.PrimitiveType, ToLiteral<any>>;
 
+export interface Sort {
+    readonly value: Expression<any>;
+    readonly descending: boolean;
+}
+
+export interface Page {
+    readonly offset: number;
+    readonly limit: number;
+}
+
+export type PageMapping = (page: Page) => string;
+
 export interface Engine {
     readonly literalMapping: LiteralMapping;
+    readonly pageMapping: PageMapping;
 }
 
 export interface ToSqlContext {

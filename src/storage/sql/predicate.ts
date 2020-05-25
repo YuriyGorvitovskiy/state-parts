@@ -4,23 +4,23 @@ import * as SQL from "./sql";
 
 export type comparison = "and" | "between" | "equal" | "greater" | "in" | "is null" | "lesser" | "like" | "or";
 
-export class Predicate<T extends PT.PrimitiveType> implements SQL.Expression<PT.BooleanType> {
+export class Predicate implements SQL.Expression<PT.BooleanType> {
     readonly type = "boolean";
     readonly invert: boolean;
     readonly comp: comparison;
-    readonly args: List<SQL.Expression<T>>;
+    readonly args: List<SQL.Expression<any>>;
 
-    constructor(invert: boolean, comp: comparison, args: List<SQL.Expression<T>>) {
+    constructor(invert: boolean, comp: comparison, args: List<SQL.Expression<any>>) {
         this.invert = invert;
         this.comp = comp;
         this.args = args;
     }
 
-    public not(): Predicate<T> {
+    public not(): Predicate {
         return new Predicate(!this.invert, this.comp, this.args);
     }
 
-    public and(...args: SQL.Expression<PT.BooleanType>[]): Predicate<PT.BooleanType> {
+    public and(...args: SQL.Expression<PT.BooleanType>[]): Predicate {
         const flatArgs = [this, ...args].flatMap((p) => {
             if (p instanceof Predicate && "and" === p.comp && !p.invert) {
                 return p.args.toArray() as SQL.Expression<PT.BooleanType>[];
@@ -30,7 +30,7 @@ export class Predicate<T extends PT.PrimitiveType> implements SQL.Expression<PT.
         return new Predicate(false, "and", List(flatArgs));
     }
 
-    public or(...args: SQL.Expression<PT.BooleanType>[]): Predicate<PT.BooleanType> {
+    public or(...args: SQL.Expression<PT.BooleanType>[]): Predicate {
         const flatArgs = [this, ...args].flatMap((p) => {
             if (p instanceof Predicate && "or" === p.comp && !p.invert) {
                 return p.args.toArray() as SQL.Expression<PT.BooleanType>[];
@@ -123,95 +123,95 @@ export const isBetween = <T extends PT.NumericType>(
     left: SQL.Expression<T>,
     low: SQL.Expression<T>,
     high: SQL.Expression<T>
-): Predicate<T> => {
-    return new Predicate<T>(false, "between", List([left, low, high]));
+): Predicate => {
+    return new Predicate(false, "between", List([left, low, high]));
 };
 
 export const notBetween = <T extends PT.NumericType>(
     left: SQL.Expression<T>,
     low: SQL.Expression<T>,
     high: SQL.Expression<T>
-): Predicate<T> => {
-    return new Predicate<T>(true, "between", List([left, low, high]));
+): Predicate => {
+    return new Predicate(true, "between", List([left, low, high]));
 };
 
 export const isEqual = <T extends PT.PrimitiveType>(
     left: SQL.Expression<T>,
     right: SQL.Expression<T>
-): Predicate<T> => {
-    return new Predicate<T>(false, "equal", List([left, right]));
+): Predicate => {
+    return new Predicate(false, "equal", List([left, right]));
 };
 
 export const notEqual = <T extends PT.PrimitiveType>(
     left: SQL.Expression<T>,
     right: SQL.Expression<T>
-): Predicate<T> => {
-    return new Predicate<T>(true, "equal", List([left, right]));
+): Predicate => {
+    return new Predicate(true, "equal", List([left, right]));
 };
 
 export const isIn = <T extends PT.PrimitiveType>(
     left: SQL.Expression<T>,
     ...args: SQL.Expression<T>[]
-): Predicate<T> => {
-    return new Predicate<T>(false, "in", List([left, ...args]));
+): Predicate => {
+    return new Predicate(false, "in", List([left, ...args]));
 };
 
 export const notIn = <T extends PT.PrimitiveType>(
     left: SQL.Expression<T>,
     ...args: SQL.Expression<T>[]
-): Predicate<T> => {
-    return new Predicate<T>(true, "in", List([left, ...args]));
+): Predicate => {
+    return new Predicate(true, "in", List([left, ...args]));
 };
 
 export const isGreater = <T extends PT.NumericType>(
     left: SQL.Expression<T>,
     right: SQL.Expression<T>
-): Predicate<T> => {
-    return new Predicate<T>(false, "greater", List([left, right]));
+): Predicate => {
+    return new Predicate(false, "greater", List([left, right]));
 };
 
 export const notGreater = <T extends PT.NumericType>(
     left: SQL.Expression<T>,
     right: SQL.Expression<T>
-): Predicate<T> => {
-    return new Predicate<T>(true, "greater", List([left, right]));
+): Predicate => {
+    return new Predicate(true, "greater", List([left, right]));
 };
 
-export const isLesser = <T extends PT.NumericType>(left: SQL.Expression<T>, right: SQL.Expression<T>): Predicate<T> => {
-    return new Predicate<T>(false, "lesser", List([left, right]));
+export const isLesser = <T extends PT.NumericType>(left: SQL.Expression<T>, right: SQL.Expression<T>): Predicate => {
+    return new Predicate(false, "lesser", List([left, right]));
 };
 
 export const notLesser = <T extends PT.NumericType>(
     left: SQL.Expression<T>,
     right: SQL.Expression<T>
-): Predicate<T> => {
-    return new Predicate<T>(true, "lesser", List([left, right]));
+): Predicate => {
+    return new Predicate(true, "lesser", List([left, right]));
 };
 
-export const isNull = <T extends PT.PrimitiveType>(left: SQL.Expression<T>): Predicate<T> => {
-    return new Predicate<T>(false, "is null", List([left]));
+export const isNull = <T extends PT.PrimitiveType>(left: SQL.Expression<T>): Predicate => {
+    return new Predicate(false, "is null", List([left]));
 };
 
-export const notNull = <T extends PT.PrimitiveType>(left: SQL.Expression<T>): Predicate<T> => {
-    return new Predicate<T>(true, "is null", List([left]));
+export const notNull = <T extends PT.PrimitiveType>(left: SQL.Expression<T>): Predicate => {
+    return new Predicate(true, "is null", List([left]));
 };
 
-export const isLike = <T extends PT.TextualType>(left: SQL.Expression<T>, right: SQL.Expression<T>): Predicate<T> => {
-    return new Predicate<T>(false, "like", List([left, right]));
+export const isLike = <T extends PT.TextualType>(left: SQL.Expression<T>, right: SQL.Expression<T>): Predicate => {
+    return new Predicate(false, "like", List([left, right]));
 };
 
-export const notLike = <T extends PT.TextualType>(left: SQL.Expression<T>, right: SQL.Expression<T>): Predicate<T> => {
-    return new Predicate<T>(true, "like", List([left, right]));
+export const notLike = <T extends PT.TextualType>(left: SQL.Expression<T>, right: SQL.Expression<T>): Predicate => {
+    return new Predicate(true, "like", List([left, right]));
 };
 
-export const and = (...args: SQL.Expression<PT.BooleanType>[]): Predicate<PT.BooleanType> => {
+export const and = (...args: SQL.Expression<PT.BooleanType>[]): Predicate => {
     return new Predicate(false, "and", List(args));
 };
 
-export const or = (...args: SQL.Expression<PT.BooleanType>[]): Predicate<PT.BooleanType> => {
+export const or = (...args: SQL.Expression<PT.BooleanType>[]): Predicate => {
     return new Predicate(false, "or", List(args));
 };
 
-export const not = (arg: SQL.Expression<PT.BooleanType>): Predicate<PT.BooleanType> => {
+export const not = (arg: SQL.Expression<PT.BooleanType>): Predicate => {
     return new Predicate(true, "and", List([arg]));
 };

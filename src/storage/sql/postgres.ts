@@ -1,4 +1,4 @@
-import { Map as Postgres } from "immutable";
+import { Map } from "immutable";
 import { escape } from "sqlstring";
 
 import * as SQL from "./sql";
@@ -19,5 +19,6 @@ const LITERAL_MAPPING: SQL.LiteralMappingDefinition = {
 };
 
 export const engine: SQL.Engine = {
-    literalMapping: Postgres(Object.entries(LITERAL_MAPPING)) as SQL.LiteralMapping,
+    literalMapping: Map(Object.entries(LITERAL_MAPPING)) as SQL.LiteralMapping,
+    pageMapping: (page: SQL.Page) => " LIMIT " + page.limit + " OFFSET " + page.offset,
 };

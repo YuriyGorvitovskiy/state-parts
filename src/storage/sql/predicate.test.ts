@@ -1,7 +1,6 @@
 import * as CL from "./column"
 import * as LT from "./literal";
 import * as PC from "./predicate";
-import * as PV from "./primitive";
 import * as PG from "./postgres";
 import * as SQL from "./sql";
 
