@@ -2,7 +2,7 @@ import * as fs from "fs";
 import * as IM from "immutable";
 import * as VL from "./value";
 
-export type PrimitiveType = 'boolean' | 'double' | 'integer' | 'string' | 'timestamp' | 'reference';
+export type PrimitiveType = 'boolean' | 'double' | 'identifier' | 'integer' | 'string' | 'text' | 'timestamp' | 'reference';
 
 export interface Attribute {
     readonly type: PrimitiveType;
@@ -20,7 +20,7 @@ export interface Model {
     readonly classes: IM.Map<string, Class>;
 }
 
-const primitives: PrimitiveType[] = ['boolean', 'double', 'integer', 'string', 'timestamp'];
+const primitives: PrimitiveType[] = ['boolean', 'double', 'identifier', 'integer', 'string', 'text', 'timestamp'];
 export const randomPrimitive = () => {
     return VL.randomFrom(primitives);
 }
@@ -42,7 +42,7 @@ const buildIn: IM.Map<string, Attribute> = IM.OrderedMap({
         type: 'reference'
     },
     label: {
-        type: 'string'
+        type: 'identifier'
     }
 });
 export const randomClass = (classes: string[], minIncAttr: number = 5, maxExcAttr: number = 80, minIncRel: number = 1, maxExcRel: number = 20): Class => {
@@ -76,18 +76,46 @@ export const randomModel = (minIncClasses: number, maxExcClasses: number): Model
     }
 }
 
+const CLASS_EXT = ".class.json";
 export const saveModelToFolder = (model: Model, folder: string) => {
     if (!folder.endsWith('/')) {
         folder = folder + '/';
     }
-    fs.mkdirSync(folder, { recursive: true });
+    if (fs.existsSync(folder)) {
+        fs.readdirSync(folder)
+            .forEach((f) => fs.unlinkSync(folder + f));
+    } else {
+        fs.mkdirSync(folder, { recursive: true });
+    }
 
     model.classes.forEach((c, k) => {
         fs.writeFileSync(
-            folder + k + ".json",
+            folder + k + CLASS_EXT,
             JSON.stringify(c, null, 4)
         )
     });
+}
+
+export const parseClassJson = (jsonString: string): Class => {
+    const json = JSON.parse(jsonString);
+    return {
+        attributes: IM.OrderedMap(json.attributes)
+    };
+}
+export const readModelFromFolder = (folder: string): Model => {
+    if (!folder.endsWith('/')) {
+        folder = folder + '/';
+    }
+    return {
+        classes: IM.Map(
+            fs.readdirSync(folder)
+                .filter(f => f.endsWith(CLASS_EXT))
+                .map(f => [
+                    f.substr(0, f.length - CLASS_EXT.length),
+                    parseClassJson(fs.readFileSync(folder + f).toString("utf-8"))
+                ])
+        )
+    }
 }
 
 // node build/js/generator/model.js ./test-data/gen-model
