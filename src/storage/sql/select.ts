@@ -1,4 +1,4 @@
-import * as SQL from "./sql"
+import * as SQL from "./sql";
 import { Field } from "./field";
 import { Join } from "./join";
 import { Predicate } from "./predicate";
@@ -34,13 +34,24 @@ export class Select implements SQL.Element {
         const subCtx = {
             ...ctx,
             indent: ctx.indent + "      ",
-        }
-        return ctx.indent + "SELECT " + this.fields.map(f => f.toSql(subCtx)).join(",\n" + subCtx.indent)
-            + "\n" + ctx.indent + this.joins.map(j => j.toSql(subCtx)).join("\n" + ctx.indent)
-            + (this.where ? + "\n" + ctx.indent + " WHERE " + this.where.toSql(subCtx) : "")
-            + (this.group ? + "\n" + ctx.indent + " GROUP BY " + this.group.map(g => g.toSql(subCtx)).join(", ") : "")
-            + (this.having ? + "\n" + ctx.indent + "HAVING " + this.having.toSql(subCtx) : "")
-            + (this.sort ? + "\n" + ctx.indent + " ORDER BY " + this.sort.map(s => s.value.toSql(subCtx) + s.descending ? " DESC" : " ASC").join(", ") : "")
-            + (this.page ? + "\n" + ctx.indent + ctx.engine.pageMapping(this.page) : "");
+        };
+        return (
+            ctx.indent +
+            "SELECT " +
+            this.fields.map((f) => f.toSql(subCtx)).join(",\n" + subCtx.indent) +
+            "\n" +
+            ctx.indent +
+            this.joins.map((j) => j.toSql(subCtx)).join("\n" + ctx.indent) +
+            (this.where ? +"\n" + ctx.indent + " WHERE " + this.where.toSql(subCtx) : "") +
+            (this.group ? +"\n" + ctx.indent + " GROUP BY " + this.group.map((g) => g.toSql(subCtx)).join(", ") : "") +
+            (this.having ? +"\n" + ctx.indent + "HAVING " + this.having.toSql(subCtx) : "") +
+            (this.sort
+                ? +"\n" +
+                  ctx.indent +
+                  " ORDER BY " +
+                  this.sort.map((s) => (s.value.toSql(subCtx) + s.descending ? " DESC" : " ASC")).join(", ")
+                : "") +
+            (this.page ? +"\n" + ctx.indent + ctx.engine.pageMapping(this.page) : "")
+        );
     }
 }

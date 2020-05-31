@@ -1,7 +1,7 @@
 import * as SQL from "./sql";
 import * as PC from "./predicate";
 
-type JoinType = 'from' | 'inner' | 'left' | 'right' | 'full';
+type JoinType = "from" | "inner" | "left" | "right" | "full";
 
 export class Join implements SQL.Element {
     readonly join: JoinType;
@@ -16,15 +16,19 @@ export class Join implements SQL.Element {
 
     public toSqlJoin(): string {
         switch (this.join) {
-            case 'from': return "  FROM ";
-            case 'inner': return " INNER JOIN";
-            case 'left': return "  LEFT JOIN";
-            case 'right': return " RIGHT JOIN";
-            case 'full': return "  FULL JOIN";
+            case "from":
+                return "  FROM ";
+            case "inner":
+                return " INNER JOIN";
+            case "left":
+                return "  LEFT JOIN";
+            case "right":
+                return " RIGHT JOIN";
+            case "full":
+                return "  FULL JOIN";
         }
     }
     public toSql(ctx: SQL.ToSqlContext): string {
-        return this.toSqlJoin() + " " + this.table +
-            (this.on ? " ON " + this.on.toSql(ctx) : "");
+        return this.toSqlJoin() + " " + this.table + (this.on ? " ON " + this.on.toSql(ctx) : "");
     }
 }

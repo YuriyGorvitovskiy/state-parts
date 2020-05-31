@@ -60,10 +60,10 @@ export const toSqlChainOperator = (ctx: ToSqlContext, sqlOperator: string, args:
 export const toSqlArguments = (ctx: ToSqlContext, args: List<Expression<any>>): string => {
     const subCtx = {
         ...ctx,
-        inExpression: false
-    }
-    return "(" + args.map(a => a.toSql(subCtx)).join(", ") + ")";
-}
+        inExpression: false,
+    };
+    return "(" + args.map((a) => a.toSql(subCtx)).join(", ") + ")";
+};
 
 export const toSqlBraceInExpression = (ctx: ToSqlContext, sql: string): string => {
     return ctx.inExpression ? "(" + sql + ")" : sql;

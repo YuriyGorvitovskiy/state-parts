@@ -1,4 +1,4 @@
-import * as CL from "./column"
+import * as CL from "./column";
 import * as LT from "./literal";
 import * as PC from "./predicate";
 import * as PG from "./postgres";
@@ -12,7 +12,9 @@ const CTX: SQL.ToSqlContext = {
 
 test("Function notBetween.not()", () => {
     // Execute
-    const result = PC.notBetween(CL.column("integer", "user", "age"), LT.integerLiteral(21), LT.integerLiteral(65)).not().toSql(CTX);
+    const result = PC.notBetween(CL.column("integer", "user", "age"), LT.integerLiteral(21), LT.integerLiteral(65))
+        .not()
+        .toSql(CTX);
 
     // Verify
     expect(result).toEqual("user.age BETWEEN 21 AND 65");
@@ -20,9 +22,7 @@ test("Function notBetween.not()", () => {
 
 test("Function and([column]).not()", () => {
     // Execute
-    const result = PC.and(
-        CL.column("boolean", "user", "employed")
-    ).not().toSql(CTX);
+    const result = PC.and(CL.column("boolean", "user", "employed")).not().toSql(CTX);
 
     // Verify
     expect(result).toEqual("NOT user.employed");
@@ -30,7 +30,9 @@ test("Function and([column]).not()", () => {
 
 test("Function and([equal]).not()", () => {
     // Execute
-    const result = PC.and(PC.isEqual(CL.column("integer", "user", "age"), LT.integerLiteral(50))).not().toSql(CTX);
+    const result = PC.and(PC.isEqual(CL.column("integer", "user", "age"), LT.integerLiteral(50)))
+        .not()
+        .toSql(CTX);
 
     // Verify
     expect(result).toEqual("NOT (user.age = 50)");
@@ -40,8 +42,10 @@ test("Function and([column, equal]).not()", () => {
     // Execute
     const result = PC.and(
         CL.column("boolean", "user", "employed"),
-        PC.isEqual(CL.column("integer", "user", "age"), LT.integerLiteral(50)),
-    ).not().toSql(CTX);
+        PC.isEqual(CL.column("integer", "user", "age"), LT.integerLiteral(50))
+    )
+        .not()
+        .toSql(CTX);
 
     // Verify
     expect(result).toEqual("NOT (user.employed AND (user.age = 50))");
@@ -89,18 +93,26 @@ test("Function equal.or(column)", () => {
 
 test("Function isBetween", () => {
     // Execute
-    const result = PC.isBetween(CL.column("integer", "user", "age"), LT.integerLiteral(21), LT.integerLiteral(65)).toSql(CTX);
+    const result = PC.isBetween(
+        CL.column("integer", "user", "age"),
+        LT.integerLiteral(21),
+        LT.integerLiteral(65)
+    ).toSql(CTX);
 
     // Verify
-    expect(result).toEqual("user.age BETWEEN 21 AND 65")
+    expect(result).toEqual("user.age BETWEEN 21 AND 65");
 });
 
 test("Function notBetween", () => {
     // Execute
-    const result = PC.notBetween(CL.column("integer", "user", "age"), LT.integerLiteral(21), LT.integerLiteral(65)).toSql(CTX);
+    const result = PC.notBetween(
+        CL.column("integer", "user", "age"),
+        LT.integerLiteral(21),
+        LT.integerLiteral(65)
+    ).toSql(CTX);
 
     // Verify
-    expect(result).toEqual("user.age NOT BETWEEN 21 AND 65")
+    expect(result).toEqual("user.age NOT BETWEEN 21 AND 65");
 });
 
 test("Function isEqual", () => {
@@ -108,7 +120,7 @@ test("Function isEqual", () => {
     const result = PC.isEqual(CL.column("integer", "user", "age"), LT.integerLiteral(50)).toSql(CTX);
 
     // Verify
-    expect(result).toEqual("user.age = 50")
+    expect(result).toEqual("user.age = 50");
 });
 
 test("Function notEqual", () => {
@@ -116,23 +128,27 @@ test("Function notEqual", () => {
     const result = PC.notEqual(CL.column("integer", "user", "age"), LT.integerLiteral(50)).toSql(CTX);
 
     // Verify
-    expect(result).toEqual("user.age != 50")
+    expect(result).toEqual("user.age != 50");
 });
 
 test("Function isIn", () => {
     // Execute
-    const result = PC.isIn(CL.column("integer", "user", "age"), LT.integerLiteral(25), LT.integerLiteral(50)).toSql(CTX);
+    const result = PC.isIn(CL.column("integer", "user", "age"), LT.integerLiteral(25), LT.integerLiteral(50)).toSql(
+        CTX
+    );
 
     // Verify
-    expect(result).toEqual("user.age IN (25, 50)")
+    expect(result).toEqual("user.age IN (25, 50)");
 });
 
 test("Function notIn", () => {
     // Execute
-    const result = PC.notIn(CL.column("integer", "user", "age"), LT.integerLiteral(25), LT.integerLiteral(50)).toSql(CTX);
+    const result = PC.notIn(CL.column("integer", "user", "age"), LT.integerLiteral(25), LT.integerLiteral(50)).toSql(
+        CTX
+    );
 
     // Verify
-    expect(result).toEqual("user.age NOT IN (25, 50)")
+    expect(result).toEqual("user.age NOT IN (25, 50)");
 });
 
 test("Function isGreater", () => {
@@ -140,7 +156,7 @@ test("Function isGreater", () => {
     const result = PC.isGreater(CL.column("integer", "user", "age"), LT.integerLiteral(25)).toSql(CTX);
 
     // Verify
-    expect(result).toEqual("user.age > 25")
+    expect(result).toEqual("user.age > 25");
 });
 
 test("Function notGreater", () => {
@@ -148,7 +164,7 @@ test("Function notGreater", () => {
     const result = PC.notGreater(CL.column("integer", "user", "age"), LT.integerLiteral(25)).toSql(CTX);
 
     // Verify
-    expect(result).toEqual("user.age <= 25")
+    expect(result).toEqual("user.age <= 25");
 });
 
 test("Function isLesser", () => {
@@ -156,7 +172,7 @@ test("Function isLesser", () => {
     const result = PC.isLesser(CL.column("integer", "user", "age"), LT.integerLiteral(25)).toSql(CTX);
 
     // Verify
-    expect(result).toEqual("user.age < 25")
+    expect(result).toEqual("user.age < 25");
 });
 
 test("Function notLesser", () => {
@@ -164,7 +180,7 @@ test("Function notLesser", () => {
     const result = PC.notLesser(CL.column("integer", "user", "age"), LT.integerLiteral(25)).toSql(CTX);
 
     // Verify
-    expect(result).toEqual("user.age >= 25")
+    expect(result).toEqual("user.age >= 25");
 });
 
 test("Function isNull", () => {
@@ -172,7 +188,7 @@ test("Function isNull", () => {
     const result = PC.isNull(CL.column("integer", "user", "age")).toSql(CTX);
 
     // Verify
-    expect(result).toEqual("user.age IS NULL")
+    expect(result).toEqual("user.age IS NULL");
 });
 
 test("Function notNull", () => {
@@ -180,7 +196,7 @@ test("Function notNull", () => {
     const result = PC.notNull(CL.column("integer", "user", "age")).toSql(CTX);
 
     // Verify
-    expect(result).toEqual("user.age IS NOT NULL")
+    expect(result).toEqual("user.age IS NOT NULL");
 });
 
 test("Function isLike", () => {
@@ -198,7 +214,6 @@ test("Function notLike", () => {
     // Verify
     expect(result).toEqual("user.name NOT LIKE E'John %'");
 });
-
 
 test("Function and", () => {
     // Execute
@@ -231,5 +246,3 @@ test("Function not", () => {
     // Verify
     expect(result).toEqual("NOT user.employed");
 });
-
-

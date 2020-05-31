@@ -1,5 +1,5 @@
-import * as PV from "./primitive"
-import * as SQL from "./sql"
+import * as PV from "./primitive";
+import * as SQL from "./sql";
 
 export class Field<T extends PV.PrimitiveType> implements SQL.Element {
     readonly type: T;
