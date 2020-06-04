@@ -1,5 +1,6 @@
 import { Expression, Engine } from "./sql";
 import { PrimitiveType, primitive } from "./primitive";
+import { Field } from "./field";
 
 export class Column<T extends PrimitiveType> implements Expression<T> {
     readonly type: T;
@@ -10,6 +11,10 @@ export class Column<T extends PrimitiveType> implements Expression<T> {
         this.type = type;
         this.table = tableName;
         this.column = columnName;
+    }
+
+    public as(alias: string): Field<T> {
+        return new Field(this.type, alias, this);
     }
 
     public toSql(): string {

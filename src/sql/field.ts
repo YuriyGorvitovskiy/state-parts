@@ -7,7 +7,7 @@ export class Field<T extends PV.PrimitiveType> implements SQL.Element {
     readonly value: SQL.Expression<T>;
 
     constructor(type: T, name: string, value: SQL.Expression<T>) {
-        this.type = type;
+        this.type = value.type;
         this.name = name;
         this.value = value;
     }
@@ -16,3 +16,7 @@ export class Field<T extends PV.PrimitiveType> implements SQL.Element {
         return this.value.toSql(ctx) + " AS " + this.name;
     }
 }
+
+export const field = <T extends PV.PrimitiveType>(name: string, value: SQL.Expression<T>): Field<T> => {
+    return new Field<T>(value.type, name, value);
+};

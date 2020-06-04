@@ -17,7 +17,7 @@ export class Join implements SQL.Element {
     public toSqlJoin(): string {
         switch (this.join) {
             case "from":
-                return "  FROM ";
+                return "  FROM";
             case "inner":
                 return " INNER JOIN";
             case "left":
@@ -31,4 +31,12 @@ export class Join implements SQL.Element {
     public toSql(ctx: SQL.ToSqlContext): string {
         return this.toSqlJoin() + " " + this.table + (this.on ? " ON " + this.on.toSql(ctx) : "");
     }
+}
+
+export const from = (table: string): Join => {
+    return new Join('from', table, null);
+}
+
+export const left = (table: string, on: PC.Predicate): Join => {
+    return new Join('left', table, on);
 }

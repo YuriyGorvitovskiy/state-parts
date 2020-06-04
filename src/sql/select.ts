@@ -33,7 +33,7 @@ export class Select implements SQL.Element {
     public toSql(ctx: SQL.ToSqlContext): string {
         const subCtx = {
             ...ctx,
-            indent: ctx.indent + "      ",
+            indent: ctx.indent + "       ",
         };
         return (
             ctx.indent +
@@ -42,16 +42,16 @@ export class Select implements SQL.Element {
             "\n" +
             ctx.indent +
             this.joins.map((j) => j.toSql(subCtx)).join("\n" + ctx.indent) +
-            (this.where ? +"\n" + ctx.indent + " WHERE " + this.where.toSql(subCtx) : "") +
-            (this.group ? +"\n" + ctx.indent + " GROUP BY " + this.group.map((g) => g.toSql(subCtx)).join(", ") : "") +
-            (this.having ? +"\n" + ctx.indent + "HAVING " + this.having.toSql(subCtx) : "") +
+            (this.where ? "\n" + ctx.indent + " WHERE " + this.where.toSql(subCtx) : "") +
+            (this.group ? "\n" + ctx.indent + " GROUP BY " + this.group.map((g) => g.toSql(subCtx)).join(", ") : "") +
+            (this.having ? "\n" + ctx.indent + "HAVING " + this.having.toSql(subCtx) : "") +
             (this.sort
-                ? +"\n" +
-                  ctx.indent +
-                  " ORDER BY " +
-                  this.sort.map((s) => (s.value.toSql(subCtx) + s.descending ? " DESC" : " ASC")).join(", ")
+                ? "\n" +
+                ctx.indent +
+                " ORDER BY " +
+                this.sort.map((s) => (s.value.toSql(subCtx) + s.descending ? " DESC" : " ASC")).join(", ")
                 : "") +
-            (this.page ? +"\n" + ctx.indent + ctx.engine.pageMapping(this.page) : "")
+            (this.page ? "\n" + ctx.indent + ctx.engine.pageMapping(this.page) : "")
         );
     }
 }
