@@ -6,11 +6,13 @@ type JoinType = "from" | "inner" | "left" | "right" | "full";
 export class Join implements SQL.Element {
     readonly join: JoinType;
     readonly table: string;
+    readonly alias: string;
     readonly on: PC.Predicate;
 
-    constructor(join: JoinType, table: string, on: PC.Predicate) {
+    constructor(join: JoinType, table: string, alias: string, on: PC.Predicate) {
         this.join = join;
         this.table = table;
+        this.alias = alias;
         this.on = on;
     }
 
@@ -29,14 +31,17 @@ export class Join implements SQL.Element {
         }
     }
     public toSql(ctx: SQL.ToSqlContext): string {
-        return this.toSqlJoin() + " " + this.table + (this.on ? " ON " + this.on.toSql(ctx) : "");
+        return this.toSqlJoin() + " " + this.table + " " + this.alias + (this.on ? " ON " + this.on.toSql(ctx) : "");
     }
 }
 
-export const from = (table: string): Join => {
-    return new Join('from', table, null);
-}
+export const from = (table: string, alias: string): Join => {
+    return new Join("from", table, alias, null);
+};
 
-export const left = (table: string, on: PC.Predicate): Join => {
-    return new Join('left', table, on);
-}
+export const inner = (table: string, alias: string, on: PC.Predicate): Join => {
+    return new Join("inner", table, alias, on);
+};
+export const left = (table: string, alias: string, on: PC.Predicate): Join => {
+    return new Join("left", table, alias, on);
+};

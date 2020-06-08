@@ -4,13 +4,13 @@ import { Join } from "./join";
 import { Predicate } from "./predicate";
 
 export class Select implements SQL.Element {
-    readonly fields: Field<any>[];
-    readonly joins: Join[];
-    readonly where: Predicate;
-    readonly group: SQL.Expression<any>[];
-    readonly having: Predicate;
-    readonly sort: SQL.Sort[];
-    readonly page: SQL.Page;
+    fields: Field<any>[];
+    joins: Join[];
+    where: Predicate;
+    group: SQL.Expression<any>[];
+    having: Predicate;
+    sort: SQL.Sort[];
+    page: SQL.Page;
 
     constructor(
         fields: Field<any>[],
@@ -47,9 +47,9 @@ export class Select implements SQL.Element {
             (this.having ? "\n" + ctx.indent + "HAVING " + this.having.toSql(subCtx) : "") +
             (this.sort
                 ? "\n" +
-                ctx.indent +
-                " ORDER BY " +
-                this.sort.map((s) => (s.value.toSql(subCtx) + s.descending ? " DESC" : " ASC")).join(", ")
+                  ctx.indent +
+                  " ORDER BY " +
+                  this.sort.map((s) => (s.value.toSql(subCtx) + s.descending ? " DESC" : " ASC")).join(", ")
                 : "") +
             (this.page ? "\n" + ctx.indent + ctx.engine.pageMapping(this.page) : "")
         );
