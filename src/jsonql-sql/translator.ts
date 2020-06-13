@@ -71,9 +71,10 @@ export const toSQL = <R>(model: SG.IModel, implicitQuery: SG.IQuery<R>): [Select
 };
 
 const listifyOrderedMaps = (r: OrderedMap<number, Map<string, any>>): List<Map<string, any>> => {
+
     return List(r.toList().map(e =>
         e.mapEntries(([k, v]) =>
-            [k, v.isOrderedMap && v.isOrderedMap() ? listifyOrderedMaps(v as OrderedMap<number, Map<string, any>>) : v])));
+            [k, OrderedMap.isOrderedMap(v) ? listifyOrderedMaps(v as OrderedMap<number, Map<string, any>>) : v])));
 }
 
 const addJoin = (parent: Builder, joinCall: (parent, child) => Join): Builder => {
@@ -123,12 +124,17 @@ const addSubQuery = <R>(parent: Builder, name: string, query: SG.ISubQuery<R>): 
         addChildren(builder, query as SG.ISelect<R>);
         return (res) => res;
     }
+
     const columnAlias = builder.nextColumnAlias();
     builder.select.fields.push(field(columnAlias, id));
     const childResultBuilder = addChildren(builder, query as SG.ISelect<R>).resultBuilder;
     return "forward" === query.$dir
         ? (res, row) => { // Single row per field
             const rowId = row[columnAlias] as number;
+            if (null == rowId) {
+                return res.set(name, null);
+            }
+
             const beginRecord = res.get(name) as Map<string, any>;
             const argRecord = beginRecord || Map([["id", rowId]]);
             const endRecord = childResultBuilder(argRecord, row);
@@ -140,6 +146,9 @@ const addSubQuery = <R>(parent: Builder, name: string, query: SG.ISubQuery<R>): 
         : (res, row) => { // Multiple rows per fiield
             const rowId = row[columnAlias] as number;
             const queryRecords = res.get(name) as OrderedMap<number, Map<string, any>>;
+            if (null == rowId) {
+                return queryRecords || res.set(name, OrderedMap());
+            }
             const beginRecord = queryRecords?.get(rowId);
             const argRecord = beginRecord || Map([["id", rowId]]);
             const endRecord = childResultBuilder(argRecord, row);
