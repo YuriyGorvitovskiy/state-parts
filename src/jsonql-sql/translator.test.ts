@@ -3,6 +3,7 @@ import * as SQL from "../sql/sql";
 import * as PS from "../sql/postgres";
 
 import * as TR from "./translator";
+import { OrderedMap } from "immutable";
 
 const ctx: SQL.ToSqlContext = {
     engine: PS.engine,
@@ -69,19 +70,67 @@ test("Simple query", () => {
     };
 
     // Execute
-    const result = TR.toSQL(model, query);
+    const [select, handler] = TR.toSQL(model, query);
 
     // Verify
-    expect(result.toSql(ctx)).toBe(`\
-SELECT t1.id AS id,
-       t1.label AS label,
-       t1.hrcdpayq AS hrcdpayq,
-       t2.id AS rgmqgeete,
-       t2.label AS label
+    expect(select.toSql(ctx)).toBe(`\
+SELECT t1.id AS c1,
+       t1.label AS c2,
+       t1.hrcdpayq AS c3,
+       t2.id AS c4,
+       t2.label AS c5
   FROM hltrfv t1
   LEFT JOIN casbwpilgejqgunxera t2 ON t2.id = t1.rgmqgeete
  WHERE t1.hrcdpayq < 0`);
+    const response = [{
+        c1: 123,
+        c2: "first",
+        c3: 12.3,
+        c4: 234,
+        c5: "first-first",
+    }, {
+        c1: 124,
+        c2: "second",
+        c3: 23.4,
+        c4: 235,
+        c5: "second-first",
+    }, {
+        c1: 125,
+        c2: "third",
+        c3: 34.5,
+        c4: 236,
+        c5: "third-first",
+    }];
+    expect(JSON.parse(JSON.stringify(handler(response)))).toEqual([
+        {
+            id: 123,
+            label: "first",
+            hrcdpayq: 12.3,
+            rgmqgeete: {
+                id: 234,
+                label: "first-first",
+            }
+        }, {
+            id: 124,
+            label: "second",
+            hrcdpayq: 23.4,
+            rgmqgeete: {
+                id: 235,
+                label: "second-first",
+            }
+        }, {
+            id: 125,
+            label: "third",
+            hrcdpayq: 34.5,
+            rgmqgeete: {
+                id: 236,
+                label: "third-first",
+            }
+        }
+    ]);
 });
+
+
 
 /* Postgress experiment
 Reduce amount of rows returned for 2 independent query branches
