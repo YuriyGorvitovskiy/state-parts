@@ -24,7 +24,7 @@ const fieldToSql = (f: SQL.Field): string => {
 };
 
 const booleanToSql = (inv: boolean, op: string, args: List<SQL.Expression>): string => {
-    const expr = args.map(a => expressionToSql(a, true)).join(" " + op + " ");
+    const expr = args.map(a => expressionToSql(a, args.size > 1)).join(" " + op + " ");
     return inv ? "NOT (" + expr + ")" : expr;
 }
 
@@ -93,7 +93,7 @@ const joinKindToSql = (kind: SQL.JoinKind): string => {
     throw Error("Join kind " + JSON.stringify(kind) + " is not supported");
 }
 const joinToSql = (j: SQL.Join): string => {
-    return joinKindToSql(j.kind) + " " + j.tbl + " " + j.as + (this.on ? " ON " + predicateToSql(j.on) : "");
+    return joinKindToSql(j.kind) + " " + j.tbl + " " + j.as + (j.on ? " ON " + predicateToSql(j.on) : "");
 }
 
 export const toSql = (select: SQL.Select): string => {

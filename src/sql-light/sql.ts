@@ -31,8 +31,8 @@ export interface Join {
 }
 
 export interface Field {
-    readonly as: string;
     readonly val: Expression;
+    readonly as: string;
 }
 
 export interface Select {
@@ -46,9 +46,22 @@ export const select = (fields: List<Field>, joins: List<Join>, where: Predicate)
 export const literal = (val: primitive): Literal => ({ val });
 export const column = (tbl: string, col: string): Column => ({ tbl, col });
 
+export const field = (val: Expression, as: string): Field => ({ val, as });
+
+const bool = (cmp: 'and' | 'or', args: List<Predicate>): Predicate => {
+    if (args.isEmpty()) {
+        return null;
+    }
+    if (1 === args.size) {
+        return args.get(0);
+    }
+    return { inv: false, cmp, args };
+}
+export const and = (prs: List<Predicate>): Predicate => bool('and', prs);
+export const andOf = (...prs: Predicate[]): Predicate => (and(List(prs)));
+export const or = (prs: List<Predicate>): Predicate => bool('or', prs);
+export const orOf = (...prs: Predicate[]): Predicate => (or(List(prs)));
 export const not = (pr: Predicate): Predicate => ({ inv: !pr.inv, cmp: pr.cmp, args: pr.args });
-export const and = (...prs: Predicate[]): Predicate => ({ inv: false, cmp: 'and', args: List(prs) });
-export const or = (...prs: Predicate[]): Predicate => ({ inv: false, cmp: 'or', args: List(prs) });
 
 export const isEqual = (a: Expression, b: Expression): Predicate => ({ inv: false, cmp: 'equal', args: List([a, b]) });
 export const notEqual = (a: Expression, b: Expression): Predicate => ({ inv: true, cmp: 'equal', args: List([a, b]) });
