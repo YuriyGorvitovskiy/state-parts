@@ -53,7 +53,9 @@ export const writeSchema = (folder: string, schema: string, schemaSql: string, i
         folder = folder + "/";
     }
     if (fs.existsSync(folder)) {
-        fs.readdirSync(folder).forEach((f) => fs.unlinkSync(folder + f));
+        fs.readdirSync(folder)
+            .filter((f) => f.startsWith(schema))
+            .forEach((f) => fs.unlinkSync(folder + f));
     } else {
         fs.mkdirSync(folder, { recursive: true });
     }

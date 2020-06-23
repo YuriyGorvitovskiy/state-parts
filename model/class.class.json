@@ -1,0 +1,14 @@
+{
+    "attributes": {
+        "id": {
+            "type": "reference"
+        },
+        "label": {
+            "type": "identifier"
+        },
+        "schema": {
+            "type": "reference",
+            "target": "schema"
+        }
+    }
+}

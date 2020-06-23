@@ -35,7 +35,7 @@ const emptyBuilder = (model: SG.IModel): Builder => {
         tableAlias: null,
         nextTableAlias,
         nextColumnAlias,
-        resultBuilder
+        resultBuilder,
     };
 };
 
@@ -52,30 +52,33 @@ export const toSQL = <R>(model: SG.IModel, implicitQuery: SG.IQuery<R>): [Select
         builder.select,
         (rows) => {
             return listifyOrderedMaps(
-                rows.reduce(
-                    (a, r) => {
-                        const rowId = r[columnAlias] as number;
-                        const beginRecord = a.get(rowId);
-                        const argRecord = beginRecord || Map([["id", rowId]]);
-                        const endRecord = builder.resultBuilder(argRecord, r);
-                        if (beginRecord === endRecord) {
-                            return a;
-                        }
-                        return a.set(rowId, endRecord);
-                    },
-                    OrderedMap<number, Map<string, any>>()
-                )
+                rows.reduce((a, r) => {
+                    const rowId = r[columnAlias] as number;
+                    const beginRecord = a.get(rowId);
+                    const argRecord = beginRecord || Map([["id", rowId]]);
+                    const endRecord = builder.resultBuilder(argRecord, r);
+                    if (beginRecord === endRecord) {
+                        return a;
+                    }
+                    return a.set(rowId, endRecord);
+                }, OrderedMap<number, Map<string, any>>())
             );
-        }
+        },
     ];
 };
 
 const listifyOrderedMaps = (r: OrderedMap<number, Map<string, any>>): List<Map<string, any>> => {
-
-    return List(r.toList().map(e =>
-        e.mapEntries(([k, v]) =>
-            [k, OrderedMap.isOrderedMap(v) ? listifyOrderedMaps(v as OrderedMap<number, Map<string, any>>) : v])));
-}
+    return List(
+        r
+            .toList()
+            .map((e) =>
+                e.mapEntries(([k, v]) => [
+                    k,
+                    OrderedMap.isOrderedMap(v) ? listifyOrderedMaps(v as OrderedMap<number, Map<string, any>>) : v,
+                ])
+            )
+    );
+};
 
 const addJoin = (parent: Builder, joinCall: (parent, child) => Join): Builder => {
     const child = {
@@ -95,8 +98,8 @@ const addChildren = <R>(builder: Builder, query: SG.ISelect<R>): Builder => {
 
     return {
         ...builder,
-        resultBuilder: (res, row) => resultBuilders.reduce((r, h) => h(r, row), res)
-    }
+        resultBuilder: (res, row) => resultBuilders.reduce((r, h) => h(r, row), res),
+    };
 };
 
 const addChild = <R>(builder: Builder, name: string, query: SG.ISelect<R>): ResultHandler => {
@@ -115,9 +118,7 @@ const addSubQuery = <R>(parent: Builder, name: string, query: SG.ISubQuery<R>): 
     });
     const id = column("integer", builder.tableAlias, "id");
     if ("!exist" === query.$cmp) {
-        builder.select.where = builder.select.where
-            ? builder.select.where.and(PC.isNull(id))
-            : PC.isNull(id);
+        builder.select.where = builder.select.where ? builder.select.where.and(PC.isNull(id)) : PC.isNull(id);
     }
 
     if (!query.$return) {
@@ -129,34 +130,36 @@ const addSubQuery = <R>(parent: Builder, name: string, query: SG.ISubQuery<R>): 
     builder.select.fields.push(field(columnAlias, id));
     const childResultBuilder = addChildren(builder, query as SG.ISelect<R>).resultBuilder;
     return "forward" === query.$dir
-        ? (res, row) => { // Single row per field
-            const rowId = row[columnAlias] as number;
-            if (null == rowId) {
-                return res.set(name, null);
-            }
+        ? (res, row) => {
+              // Single row per field
+              const rowId = row[columnAlias] as number;
+              if (null == rowId) {
+                  return res.set(name, null);
+              }
 
-            const beginRecord = res.get(name) as Map<string, any>;
-            const argRecord = beginRecord || Map([["id", rowId]]);
-            const endRecord = childResultBuilder(argRecord, row);
-            if (beginRecord === endRecord) {
-                return res;
-            }
-            return res.set(name, endRecord);
-        }
-        : (res, row) => { // Multiple rows per fiield
-            const rowId = row[columnAlias] as number;
-            const queryRecords = res.get(name) as OrderedMap<number, Map<string, any>>;
-            if (null == rowId) {
-                return queryRecords || res.set(name, OrderedMap());
-            }
-            const beginRecord = queryRecords?.get(rowId);
-            const argRecord = beginRecord || Map([["id", rowId]]);
-            const endRecord = childResultBuilder(argRecord, row);
-            if (beginRecord === endRecord) {
-                return res;
-            }
-            return res.set(name, (queryRecords || OrderedMap()).set(rowId, endRecord));
-        }
+              const beginRecord = res.get(name) as Map<string, any>;
+              const argRecord = beginRecord || Map([["id", rowId]]);
+              const endRecord = childResultBuilder(argRecord, row);
+              if (beginRecord === endRecord) {
+                  return res;
+              }
+              return res.set(name, endRecord);
+          }
+        : (res, row) => {
+              // Multiple rows per fiield
+              const rowId = row[columnAlias] as number;
+              const queryRecords = res.get(name) as OrderedMap<number, Map<string, any>>;
+              if (null == rowId) {
+                  return queryRecords || res.set(name, OrderedMap());
+              }
+              const beginRecord = queryRecords?.get(rowId);
+              const argRecord = beginRecord || Map([["id", rowId]]);
+              const endRecord = childResultBuilder(argRecord, row);
+              if (beginRecord === endRecord) {
+                  return res;
+              }
+              return res.set(name, (queryRecords || OrderedMap()).set(rowId, endRecord));
+          };
 };
 
 const addField = <R>(builder: Builder, name: string, fld: SG.IField): ResultHandler => {
@@ -164,13 +167,11 @@ const addField = <R>(builder: Builder, name: string, fld: SG.IField): ResultHand
     const col = column(type, builder.tableAlias, fld.$field);
     const pred = cmpTopredicate(type, col, fld);
     if (pred) {
-        builder.select.where = builder.select.where
-            ? builder.select.where.and(pred)
-            : pred;
+        builder.select.where = builder.select.where ? builder.select.where.and(pred) : pred;
     }
 
     let resultBuilder: ResultHandler = (res) => res;
-    if (fld.$return && 'id' !== fld.$field) {
+    if (fld.$return && "id" !== fld.$field) {
         const columnAlias = builder.nextColumnAlias();
         builder.select.fields.push(field(columnAlias, col));
         resultBuilder = (res, row) => res.set(name, row[columnAlias]);

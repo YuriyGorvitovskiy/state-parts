@@ -1,0 +1,10 @@
+{
+    "attributes": {
+        "id": {
+            "type": "reference"
+        },
+        "label": {
+            "type": "identifier"
+        }
+    }
+}

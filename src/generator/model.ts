@@ -134,3 +134,65 @@ export const readModelFromFolder = (folder: string): Model => {
         ),
     };
 };
+
+interface SchemaEntity {
+    id: number;
+    label: string;
+}
+
+interface ClassEntity {
+    id: number;
+    label: string;
+    schema: number;
+}
+
+interface AttributeEntity {
+    id: number;
+    label: string;
+    class: number;
+    type: string;
+    target: number;
+}
+
+export const saveModelAsEntities = (schema: string, modelFolder: string, firstId: number, entityFolder: string) => {
+    if (!modelFolder.endsWith("/")) {
+        modelFolder = modelFolder + "/";
+    }
+    if (!entityFolder.endsWith("/")) {
+        entityFolder = entityFolder + "/";
+    }
+    if (fs.existsSync(entityFolder)) {
+        fs.readdirSync(entityFolder)
+            .filter((f) => f.endsWith("." + schema + ".json"))
+            .forEach((f) => fs.unlinkSync(entityFolder + f));
+    } else {
+        fs.mkdirSync(entityFolder, { recursive: true });
+    }
+
+    const model = readModelFromFolder(modelFolder);
+    const schemaId = firstId++;
+    const schemaEntity: SchemaEntity = {
+        id: schemaId,
+        label: schema,
+    };
+    fs.writeFileSync(entityFolder + "schema." + schema + ".json", JSON.stringify([schemaEntity], null, 4));
+
+    const classIds = model.classes.map(() => firstId++);
+    const classEntries: IM.Seq.Indexed<ClassEntity> = model.classes.keySeq().map((cls) => ({
+        id: classIds.get(cls),
+        label: cls,
+        schema: schemaId,
+    }));
+    fs.writeFileSync(entityFolder + "class." + schema + ".json", JSON.stringify(classEntries, null, 4));
+
+    const attributeEntries: IM.Seq.Indexed<AttributeEntity> = model.classes.entrySeq().flatMap(([type, cls]) =>
+        cls.attributes.entrySeq().map(([name, attr]) => ({
+            id: firstId++,
+            label: name,
+            class: classIds.get(type),
+            type: attr.type,
+            target: attr.target ? classIds.get(attr.target) : null,
+        }))
+    );
+    fs.writeFileSync(entityFolder + "attribute." + schema + ".json", JSON.stringify(attributeEntries, null, 4));
+};

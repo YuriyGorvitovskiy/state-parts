@@ -1,0 +1,21 @@
+{
+    "attributes": {
+        "id": {
+            "type": "reference"
+        },
+        "label": {
+            "type": "identifier"
+        },
+        "class": {
+            "type": "reference",
+            "target": "schema"
+        },
+        "type": {
+            "type": "identifier"
+        },
+        "target": {
+            "type": "reference",
+            "target": "class"
+        }
+    }
+}
