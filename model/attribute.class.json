@@ -8,7 +8,7 @@
         },
         "class": {
             "type": "reference",
-            "target": "schema"
+            "target": "class"
         },
         "type": {
             "type": "identifier"
