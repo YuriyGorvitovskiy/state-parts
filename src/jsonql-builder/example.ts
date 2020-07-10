@@ -59,7 +59,7 @@ const hlq = query('class', c => ({
     }]),
     outgoing: join('attribute', a => [a.class, {
         name: a.target.label,
-        rels: a.list({
+        rels: a.collect({
             name: a.label,
             $sort: [a.label.asc()]
         }),
@@ -68,7 +68,7 @@ const hlq = query('class', c => ({
     }]),
     incoming: join('attribute', a => [a.target, {
         name: a.class.label,
-        rels: a.group({
+        rels: a.collect({
             name: a.label,
             $sort: [a.label.asc()]
         }),
