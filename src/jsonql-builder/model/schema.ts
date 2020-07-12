@@ -2,16 +2,14 @@ import * as P from "./path";
 import Path from "./path";
 import Table from "./table";
 
-import { TSchema } from "./schema";
-
-type Columns = 'id' | 'label' | 'schema';
+type Columns = 'id' | 'label';
 
 const INFO = {
     schema: 'model',
-    table: 'class',
+    table: 'schema',
 };
 
-export class TClass extends Table<Columns> {
+export class TSchema extends Table<Columns> {
     constructor($steps: P.Steps) {
         super($steps, INFO);
     }
@@ -23,13 +21,9 @@ export class TClass extends Table<Columns> {
     get label(): Path {
         return this.get('label', p => new Path(p));
     }
-
-    get schema(): TSchema {
-        return this.get('schema', p => new TSchema(p));
-    }
 }
 
-const CLASS = new TClass(P.EMPTY);
+const SCHEMA = new TSchema(P.EMPTY);
 
-export default CLASS;
+export default SCHEMA;
 

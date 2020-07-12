@@ -1,4 +1,6 @@
-import { and } from "../sql/predicate";
+import ATTRIBUTE from "./model/attribute";
+import CLASS from "./model/class";
+import { query, and, collect } from "./model/query-map";
 
 const schemaLabel = "";
 const classLabel = "";
@@ -49,42 +51,44 @@ interface MappingResult {
     }[],
 };
 
-const hlq = query('class', c => ({
+const hlq = query(CLASS, c => ({
     name: c.label,
-    attrs: join('attribute', a => [a.class, {
+    attrs: c.id.$join(ATTRIBUTE, a => [a.class, {
         name: a.label,
         type: a.type,
-        $where: a.target.isNull(),
+        $where: a.target.$isNull(),
         $sort: a.label
     }]),
-    outgoing: join('attribute', a => [a.class, {
+    outgoing: c.id.$join(ATTRIBUTE, a => [a.class, {
         name: a.target.label,
-        rels: a.collect({
+        rels: collect({
             name: a.label,
-            $sort: [a.label.asc()]
+            $sort: [a.label.$asc()]
         }),
-        $where: a.target.isNotNull(),
-        $sort: [a.class.label.asc()]
+        $where: a.target.$isNotNull(),
+        $sort: [a.class.label.$asc()]
     }]),
-    incoming: join('attribute', a => [a.target, {
+    incoming: c.id.$join(ATTRIBUTE, a => [a.target, {
         name: a.class.label,
-        rels: a.collect({
+        rels: collect({
             name: a.label,
-            $sort: [a.label.asc()]
+            $sort: [a.label.$asc()]
         }),
-        $sort: [a.class.label.asc()]
+        $sort: [a.class.label.$asc()]
     }]),
-    $where: and(c.label.eq(classLabel), c.schema.label.eq(schemaLabel))
+    $where: and(c.label.$eq(classLabel), c.schema.label.$eq(schemaLabel))
 }));
 
 /*
-Timing 38ms, 32ms
+Timing 1 class (1+ 43 + 6 + 2 = 52 rows): 40ms, 39ms
+Timing 16 classes (16 + 604 + 109 + 107 = 836rows): 48ms, 53ms
 
 SELECT c1.id AS id, c1."label" AS name
   FROM model."class" AS c1
   LEFT JOIN  model."schema" AS c2 ON c2.id = c1."schema"
  WHERE c1."label" = 'dywjpj'
    AND c2."label" = 'gen'
+ ORDER BY c1.id ASC
 ;
 
 SELECT a."label" AS name, a."type" AS type
@@ -109,36 +113,8 @@ SELECT a2."label" AS name1, a1."label" AS name2
  ORDER BY a2."label" ASC, a1."label" ASC
 ;
 
-Timing 21ms, 20ms
-
-WITH clazz AS (
-    SELECT c1.id AS id, c1."label" AS name
-      FROM model."class" AS c1
-      LEFT JOIN  model."schema" AS c2 ON c2.id = c1."schema"
-     WHERE c1."label" = 'dywjpj'
-       AND c2."label" = 'gen'
-),   attrs AS (
-    SELECT a."class" AS id, a."label" AS name, a."type" AS type
-      FROM model."attribute" a
-     WHERE a.target IS NULL
-),   outgoing AS (
-    SELECT a1."class" AS id, a2."label" AS name1, a1."label" AS name2
-      FROM model."attribute" a1
-      LEFT JOIN  model."class" AS a2 ON a2.id = a1."target"
-     WHERE a1.target IS NOT NULL
-),   incoming AS (
-    SELECT a1.target AS id, a2."label" AS name1, a1."label" AS name2
-      FROM model."attribute" a1
-      LEFT JOIN  model."class" AS a2 ON a2.id = a1."class"
-)
-SELECT *
-  FROM clazz c
-  LEFT JOIN attrs a ON a.id = c.id
-  LEFT JOIN outgoing o ON o.id = c.id
-  LEFT JOIN incoming i ON i.id = c.id
-;
-
-Timing 31ms, 26ms
+Timing 1 class (516 rows): 64ms, 54ms
+Timing 16 classes (29013 rows): 661ms, 685ms
 
 WITH clazz AS (
     SELECT c1.id AS id, c1."label" AS name
@@ -168,7 +144,8 @@ SELECT *
  ORDER BY a.rn, o.rn, i.rn
 ;
 
-Timing 13ms, 12ms
+Timing 1 Class (43 rows): 13ms, 12ms
+Timing 16 Classes (618 rows): 47ms, 45ms
 
 WITH clazz AS (
     SELECT c1.id AS id, c1."label" AS name
@@ -201,7 +178,7 @@ SELECT *
         FULL JOIN attrs a ON a.id = i.id AND a.rn = i.rn
         FULL JOIN outgoing o ON o.id = COALESCE(i.id, a.id) AND o.rn = COALESCE(i.rn, a.rn)
   ) t ON t.id1 = c.id
- ORDER BY t.rn1
+ ORDER BY c.id, t.rn1
 ;
 
 */
