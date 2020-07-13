@@ -1,6 +1,6 @@
 import ATTRIBUTE from "./model/attribute";
 import CLASS from "./model/class";
-import { query, and, collect } from "./model/query-map";
+import * as QM from "./query-map";
 
 const schemaLabel = "";
 const classLabel = "";
@@ -33,51 +33,55 @@ const jql = {
 
 interface MappingResult {
     name: string,
-    attrs: {
-        name: string,
-        type: string,
-    }[],
-    incoming: {
-        name: string,
-        rels: {
-            name: string,
-        }[]
-    }[],
-    outgoing: {
-        name: string,
-        rels: {
-            name: string,
-        }[]
-    }[],
+    /*   attrs: {
+           name: string,
+           type: string,
+       }[],
+       incoming: {
+           name: string,
+           rels: {
+               name: string,
+           }[]
+       }[],
+       outgoing: {
+           name: string,
+           rels: {
+               name: string,
+           }[]
+       }[],
+       */
 };
 
-const hlq = query(CLASS, c => ({
+const mapQuery: QM.Query<any> = QM.query(CLASS, c => ({
     name: c.label,
     attrs: c.id.$join(ATTRIBUTE, a => [a.class, {
         name: a.label,
         type: a.type,
         $where: a.target.$isNull(),
-        $sort: a.label
+        $orderBy: [a.label.$asc()]
     }]),
     outgoing: c.id.$join(ATTRIBUTE, a => [a.class, {
         name: a.target.label,
-        rels: collect({
+        rels: {
             name: a.label,
-            $sort: [a.label.$asc()]
-        }),
+            $orderBy: [a.label.$asc()]
+        },
         $where: a.target.$isNotNull(),
-        $sort: [a.class.label.$asc()]
+        $orderBy: [a.class.label.$asc()]
     }]),
     incoming: c.id.$join(ATTRIBUTE, a => [a.target, {
         name: a.class.label,
-        rels: collect({
+        rels: {
             name: a.label,
-            $sort: [a.label.$asc()]
-        }),
-        $sort: [a.class.label.$asc()]
+            $orderBy: [a.label.$asc()]
+        },
+        $orderBy: [a.class.label.$asc()]
     }]),
-    $where: and(c.label.$eq(classLabel), c.schema.label.$eq(schemaLabel))
+    $where: QM.and(c.label.$eq(classLabel), c.schema.label.$eq(schemaLabel))
+
 }));
+
+JSON.stringify(mapQuery);
 
 /*
 Timing 1 class (1+ 43 + 6 + 2 = 52 rows): 40ms, 39ms

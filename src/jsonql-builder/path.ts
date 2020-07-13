@@ -21,8 +21,14 @@ export default class Path {
         this.$steps = $steps;
     }
 
-    $join<R, T extends Table<any>>(table: T, builder: (t: T) => [Path, R]): QM.SubQuery<R> {
-        return null;
+    $join<R, T extends Table<any>>($table: T, builder: (t: T) => [Path, QM.SubQuery<R>]): QM.SubQuery<R> {
+        const [to, query] = builder($table);
+        query.$table = $table;
+        query.$join = {
+            from: this,
+            to
+        };
+        return query;
     }
 
     $isNull(): QM.ComparisonCondition<Path> {

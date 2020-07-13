@@ -1,6 +1,6 @@
-import * as P from "./path";
-import Path from "./path";
-import Table from "./table";
+import * as P from "../path";
+import Path from "../path";
+import Table from "../table";
 
 import { TClass } from "./class";
 
@@ -8,7 +8,7 @@ type Columns = 'id' | 'label' | 'class' | 'type' | 'target';
 
 const INFO = {
     schema: 'model',
-    table: 'class',
+    table: 'attribute',
 };
 
 export class TAttribute extends Table<Columns> {

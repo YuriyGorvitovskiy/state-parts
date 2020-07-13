@@ -1,6 +1,6 @@
-import * as P from "./path";
-import Path from "./path";
-import Table from "./table";
+import * as P from "../path";
+import Path from "../path";
+import Table from "../table";
 
 import { TSchema } from "./schema";
 
