@@ -1,6 +1,7 @@
 import ATTRIBUTE from "./model/attribute";
 import CLASS from "./model/class";
 import * as QM from "./query-map";
+import Path from "./path";
 
 const schemaLabel = "";
 const classLabel = "";
@@ -33,23 +34,23 @@ const jql = {
 
 interface MappingResult {
     name: string,
-    /*   attrs: {
-           name: string,
-           type: string,
-       }[],
-       incoming: {
-           name: string,
-           rels: {
-               name: string,
-           }[]
-       }[],
-       outgoing: {
-           name: string,
-           rels: {
-               name: string,
-           }[]
-       }[],
-       */
+    attrs: {
+        name: string,
+        type: string,
+    }[],
+    incoming: {
+        name: string,
+        rels: {
+            name: string,
+        }[]
+    }[],
+    outgoing: {
+        name: string,
+        rels: {
+            name: string,
+        }[]
+    }[],
+
 };
 
 const mapQuery: QM.Query<any> = QM.query(CLASS, c => ({
@@ -78,7 +79,6 @@ const mapQuery: QM.Query<any> = QM.query(CLASS, c => ({
         $orderBy: [a.class.label.$asc()]
     }]),
     $where: QM.and(c.label.$eq(classLabel), c.schema.label.$eq(schemaLabel))
-
 }));
 
 JSON.stringify(mapQuery);

@@ -68,7 +68,7 @@ export interface SubQuery extends Query {
 
 interface Context {
     newJoinTree: (step: P.Step) => JoinTree;
-    newJoinField: (step: P.Step, join: JoinTree) => JoinField;
+    newJoinField: (table: JoinTree, step: P.Step, join: JoinTree) => JoinField;
 }
 
 
@@ -83,7 +83,7 @@ export const add = (ctx: Context, tree: JoinTree, path: Path): [JoinTree, JoinFi
         })
         .reduceRight(([pt, ef], [ot, e, s]) => {
             if (null == e) {
-                e = [-1, ctx.newJoinField(s, pt)];
+                e = [-1, ctx.newJoinField(ot, s, pt)];
                 pt = { ...ot, fields: ot.fields.push(e[1]) };
             } else if (null !== pt && pt !== e[1].join) {
                 e[1] = { ...e[1], join: pt };

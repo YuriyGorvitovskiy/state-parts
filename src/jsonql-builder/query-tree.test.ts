@@ -8,8 +8,8 @@ test("add to tree function", () => {
     let fieldCount = 1;
     let tableCount = 1;
     const ctx = {
-        newJoinField: (step: P.Step, join: QT.JoinTree): QT.JoinField => ({
-            field: "f" + fieldCount++,
+        newJoinField: (table: QT.JoinTree, step: P.Step, join: QT.JoinTree): QT.JoinField => ({
+            field: table.alias + ".f" + fieldCount++,
             column: step.column,
             join,
         }),
@@ -44,40 +44,40 @@ test("add to tree function", () => {
         schema: "model",
         table: "attribute",
         fields: IM.List.of({
-            field: "f1",
+            field: "t1.f1",
             column: "class",
             join: {
                 alias: "t2",
                 schema: "model",
                 table: "class",
                 fields: IM.List.of({
-                    field: "f2",
+                    field: "t2.f2",
                     column: "schema",
                     join: {
                         alias: "t3",
                         schema: "model",
                         table: "schema",
                         fields: IM.List.of({
-                            field: "f3",
+                            field: "t3.f3",
                             column: "label",
                             join: null
                         })
                     }
                 }, {
-                    field: "f4",
+                    field: "t2.f4",
                     column: "label",
                     join: null
                 })
             }
         }, {
-            field: "f6",
+            field: "t1.f6",
             column: "target",
             join: {
                 alias: "t4",
                 schema: "model",
                 table: "class",
                 fields: IM.List.of({
-                    field: "f5",
+                    field: "t4.f5",
                     column: "schema",
                     join: null
                 })
