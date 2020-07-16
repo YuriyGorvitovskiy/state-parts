@@ -1,6 +1,5 @@
 import * as IM from "immutable";
 import * as NL from "./nl-tree";
-import Table from "../jsonql-builder/table";
 
 interface N {
     alias: string;
