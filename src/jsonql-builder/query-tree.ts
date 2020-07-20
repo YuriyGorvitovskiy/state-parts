@@ -96,7 +96,7 @@ export const add = (ctx: Context, tree: JoinTree, path: Path): [JoinTree, JoinFi
 }
 
 
-export const build = (query: QM.Query<any>): Query => {
+export const build = (query: QM.Query): Query => {
 
     return null;
 }

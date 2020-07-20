@@ -1,4 +1,4 @@
-import * as IM from "immutable";
+import * as QC from "immutable";
 
 export type Primitive = boolean | number | string | Date;
 export type ComparisonOperator = "=" | "!=" | "in" | "!in" | "><" | "<>" | "<=" | "<" | ">" | ">=" | "like" | "!like";
