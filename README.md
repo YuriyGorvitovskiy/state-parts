@@ -2,6 +2,6 @@
 
 Drawing Start 
 
- ![Alt text](./Test Diagram.svg)
+![Example](./test-diagram.svg)
  
 Drawing End 
